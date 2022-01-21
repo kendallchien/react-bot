@@ -26,7 +26,10 @@ async def on_raw_reaction_add(payload):
             role = discord.utils.get(guild.roles, name='inferno SPOILERS')
 
         elif payload.emoji.name == 'emiya':
-            role = discord.utils.get(guild.roles, name='spiderman SPOILERS')                  
+            role = discord.utils.get(guild.roles, name='spiderman SPOILERS')
+
+        elif payload.emoji.name == 'janbear':
+            role = discord.utils.get(guild.roles, name='eternals SPOILERS')            
 
         else:
             role = discord.utils.get(guild.roles, name=payload.emoji.name)
@@ -54,7 +57,10 @@ async def on_raw_reaction_remove(payload):
             role = discord.utils.get(guild.roles, name='inferno SPOILERS')
 
         elif payload.emoji.name == 'emiya':
-            role = discord.utils.get(guild.roles, name='spiderman SPOILERS')                          
+            role = discord.utils.get(guild.roles, name='spiderman SPOILERS')   
+
+        elif payload.emoji.name == 'janbear':
+            role = discord.utils.get(guild.roles, name='spiderman SPOILERS')                                      
 
         else:
             role = discord.utils.get(guild.roles, name=payload.emoji.name)
@@ -70,12 +76,12 @@ async def on_raw_reaction_remove(payload):
         else:
             print("Role not found")
 
-# @client.event
-# async def on_message(message):
-#     if message.author == client.user:
-#         return
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
 
-#     if message.content.startswith('$hello'):
-#         await message.channel.send('Hello!')
+    if message.content.startswith('!ratbastardsignal'):
+        await message.channel.send('konichiwha @ratbastards!')
 
 client.run(TOKEN)
