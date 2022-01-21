@@ -60,7 +60,7 @@ async def on_raw_reaction_remove(payload):
             role = discord.utils.get(guild.roles, name='spiderman SPOILERS')   
 
         elif payload.emoji.name == 'janbear':
-            role = discord.utils.get(guild.roles, name='spiderman SPOILERS')                                      
+            role = discord.utils.get(guild.roles, name='eternals SPOILERS')                                      
 
         else:
             role = discord.utils.get(guild.roles, name=payload.emoji.name)
