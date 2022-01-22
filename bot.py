@@ -94,17 +94,8 @@ async def on_raw_reaction_remove(payload):
         else:
             print("Role not found")
 
-# rat signal 
-@bot.command(pass_context=True)
-async def ratsignal(ctx):
 
-    quote = random.choice(data.get('emiya'))
-
-    win_probability = random.randint(0, 100)
-
-    coward_users = ''
-    cnt_ready = 0
-    users = ''
+def get_win_url(win_probability):
 
     if win_probability <= 10:
         win_url = data.get('img').get('img1').get('link')
@@ -134,7 +125,25 @@ async def ratsignal(ctx):
         win_url = data.get('img').get('img9').get('link')
 
     elif win_probability <= 100:
-        win_url = data.get('img').get('img10').get('link')
+        win_url = data.get('img').get('img10').get('link')    
+
+    return win_url
+
+
+
+# rat signal 
+@bot.command(pass_context=True)
+async def ratsignal(ctx):
+
+    quote = random.choice(data.get('emiya'))
+
+    win_probability = random.randint(0, 100)
+
+    coward_users = ''
+    cnt_ready = 0
+    users = ''
+
+
 
 
     emb_msg = '''
@@ -224,6 +233,9 @@ async def ratsignal(ctx):
 
                         not_ready = len(user_list)
 
+
+                win_url = get_win_url(win_probability)
+
                 # create updated embed
                 emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=16769251)
                 emb1.set_image(url=win_url)
@@ -256,6 +268,8 @@ async def ratsignal(ctx):
                             coward_users = coward_users + user.mention + "\n"
 
                         not_ready = len(user_list)    
+
+                win_url = get_win_url(win_probability)                        
 
                 # create updated embed            
                 emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=16769251)
