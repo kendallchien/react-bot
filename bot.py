@@ -138,10 +138,9 @@ async def ratsignal(ctx):
 
 
     emb_msg = '''
-        konichiwha you <@934357238217326632>! {0} calls for aid!
+        konichiwha you <@&934357238217326632>! {0} calls for aid!
     '''.format(ctx.author.mention)
 
-    
     
     emb = discord.Embed(title='RATSIGNAL', description=emb_msg, color=16769251)
     emb.set_image(url='https://media.giphy.com/media/2y98KScHKeaQM/giphy.gif')
