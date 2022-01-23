@@ -299,7 +299,8 @@ async def louvre(ctx):
 
     async for msg in channel.history(limit=300):
         if hasattr(msg, 'attachments'):
-            allmsg.append(msg)
+            if len(msg.attachments) > 0:
+                allmsg.append(msg)
 
     random_msg = random.choice(allmsg)
 
