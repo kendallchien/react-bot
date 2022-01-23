@@ -71,7 +71,6 @@ async def on_raw_reaction_remove(payload):
         guild_id = payload.guild_id
         guild = discord.utils.find(lambda g : g.id == guild_id, bot.guilds)
 
-
         if payload.emoji.name == 'lmao':
             role = discord.utils.get(guild.roles, name='inferno SPOILERS')
 
@@ -135,9 +134,7 @@ def get_win_url(win_probability):
 async def ratsignal(ctx):
 
     quote = random.choice(data.get('emiya'))
-
     win_probability = random.randint(0, 100)
-
     coward_users = ''
     cnt_ready = 0
     users = ''
@@ -239,8 +236,7 @@ async def ratsignal(ctx):
                 emb1.add_field(name='Win Probability: ', value='{0}%'.format(win_probability), inline=False)
                 emb1.set_footer(text=quote)
 
-                await msg.edit(embed = emb1)      
-
+                await msg.edit(embed = emb1)
 
             elif action == 'rrem':
 
@@ -293,7 +289,8 @@ async def ping(ctx):
 @bot.command()
 async def louvre(ctx):
 
-    channel = bot.get_channel(636799254152871936)
+    # channel = bot.get_channel(636799254152871936)
+    channel = bot.get_channel(934888003367764028)
 
     # 636799254152871936
     # 934888003367764028
@@ -309,6 +306,7 @@ async def louvre(ctx):
     emb = discord.Embed(title='A gift from the Louvre', color=16769251)
     # emb.add_field(name='Curator', value=random_msg.author.mention)
     # emb.add_field(name='Circa', value=random_msg.created_at.strftime('%Y-%m-%d'))
+    emb.set_image(url=random_msg.attachments[0].url)
     emb.set_footer(text='Curated by: {0}, circa {1}'.format(random_msg.author.name, random_msg.created_at.strftime('%Y-%m-%d')))
     
 
