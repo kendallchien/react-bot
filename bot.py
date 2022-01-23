@@ -6,6 +6,7 @@ import yaml
 import time
 from dotenv import load_dotenv
 from discord.ext import commands
+from datetime import datetime
 
 with open('img.yaml') as f:
 
@@ -129,8 +130,6 @@ def get_win_url(win_probability):
 
     return win_url
 
-
-
 # rat signal 
 @bot.command(pass_context=True)
 async def ratsignal(ctx):
@@ -169,20 +168,17 @@ async def ratsignal(ctx):
         users = "" 
         coward_users = ""
 
-
         emojis = ['✅', '❌']
-
 
         def check(reaction, user):
             return (reaction.message.id == msg.id) and (user.bot != True) and (str(reaction.emoji) in emojis)
-
 
         tasks = [
             asyncio.create_task(
                 bot.wait_for(
                     'reaction_add',
                      check = check,
-                     timeout=600
+                     timeout=1800
                  ), 
                 name='radd'
             ),
@@ -190,7 +186,7 @@ async def ratsignal(ctx):
                 bot.wait_for(
                     'raw_reaction_remove',
                     check=lambda payload: str(payload.emoji) in emojis and payload.message_id == msg.id,
-                     timeout=600                     
+                     timeout=1800
                  ), 
                 name='rrem'
             )            
@@ -283,8 +279,6 @@ async def ratsignal(ctx):
         except asyncio.TimeoutError:
             break
 
-
-
 @bot.command(pass_context=True)
 async def rename(ctx, member: discord.Member, nick):
     prev = member.nick
@@ -295,5 +289,32 @@ async def rename(ctx, member: discord.Member, nick):
 @bot.command()
 async def ping(ctx):
     await ctx.channel.send("pong")
+
+@bot.command()
+async def louvre(ctx):
+
+    channel = bot.get_channel(636799254152871936)
+
+    # 636799254152871936
+    # 934888003367764028
+
+    allmsg = []
+
+    async for msg in channel.history(limit=300):
+        if hasattr(msg, 'attachments'):
+            allmsg.append(msg)
+
+    random_msg = random.choice(allmsg)
+
+    emb = discord.Embed(title='A gift from the Louvre', color=16769251)
+    # emb.add_field(name='Curator', value=random_msg.author.mention)
+    # emb.add_field(name='Circa', value=random_msg.created_at.strftime('%Y-%m-%d'))
+    emb.set_footer(text='Curated by: {0}, circa {1}'.format(random_msg.author.name, random_msg.created_at.strftime('%Y-%m-%d')))
+    
+
+    await ctx.send(
+        random_msg.content,
+        embed=emb
+        )
 
 bot.run(TOKEN)
