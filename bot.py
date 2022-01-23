@@ -289,8 +289,8 @@ async def ping(ctx):
 @bot.command()
 async def louvre(ctx):
 
-    # channel = bot.get_channel(636799254152871936)
-    channel = bot.get_channel(934888003367764028)
+    channel = bot.get_channel(636799254152871936)
+    # channel = bot.get_channel(934888003367764028)
 
     # 636799254152871936
     # 934888003367764028
