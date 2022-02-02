@@ -7,6 +7,7 @@ import time
 from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import datetime
+import riot as rt
 
 with open('img.yaml') as f:
 
@@ -34,8 +35,12 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     # print('Joining {0.id}'.format(guild))
 
+
 @bot.event
 async def on_raw_reaction_add(payload):
+    '''
+    Assign role to user on react
+    '''
     message_id = payload.message_id
     if message_id == 927674919737761832:
         guild_id = payload.guild_id
@@ -64,8 +69,12 @@ async def on_raw_reaction_add(payload):
         else:
             print("Role not found")
 
+
 @bot.event
 async def on_raw_reaction_remove(payload):
+    '''
+    Remove role from user on react
+    '''
     message_id = payload.message_id
     if message_id == 927674919737761832:
         guild_id = payload.guild_id
@@ -96,7 +105,9 @@ async def on_raw_reaction_remove(payload):
 
 
 def get_win_url(win_probability):
-
+    '''
+    Return link based on win probability 
+    '''
     if win_probability <= 10:
         win_url = data.get('img').get('img1').get('link')
 
@@ -129,29 +140,56 @@ def get_win_url(win_probability):
 
     return win_url
 
-# rat signal 
+
 @bot.command(pass_context=True)
 async def ratsignal(ctx):
-
+    '''
+    Send message poll to users in channel
+    '''
     quote = random.choice(data.get('emiya'))
     win_probability = random.randint(0, 100)
+    author_id = ctx.author.id
     coward_users = ''
     cnt_ready = 0
     users = ''
 
-    emb_msg = '''
-        konichiwha you <@&934357238217326632>! {0} calls for aid!
+    print('------------------------------------------------------')
+    print(author_id)
+
+    emb_msg1 = '''
+        konichiwha you <@&938255659516969010>! {0} calls for aid!
     '''.format(ctx.author.mention)
-    
-    emb = discord.Embed(title='RATSIGNAL', description=emb_msg, color=16769251)
-    emb.set_image(url='https://media.giphy.com/media/2y98KScHKeaQM/giphy.gif')
-    emb.add_field(name='READY', value='---', inline=False)
-    emb.add_field(name='Rat Bastards: ', value='HERE ALL USERS WITH ✅', inline=True)
-    emb.add_field(name='COWARDS: ', value='---', inline=True)
+
+    results = rt.get_last_game_summary(author_id)
+
+
+    emb_msg2 = '''
+    FYI the last time this person played... they picked {0}, had {1} kills and {2} death, and {3} THE GAME
+    '''.format(results['champion'], results['kills'], results['deaths'], 'WON' if results['win'] else 'LOST')
+
+    emb_msg = emb_msg1 + emb_msg2
+
+    emb = discord.Embed(
+            title='RATSIGNAL', 
+            description=emb_msg, 
+            color=16769251)
+    emb.add_field(
+            name='READY', 
+            value='---', 
+            inline=False)
+    emb.add_field(
+            name='Rat Bastards: ', 
+            value='HERE ALL USERS WITH ✅', 
+            inline=True)
+    emb.add_field(
+            name='COWARDS: ', 
+            value='---', 
+            inline=True)
+    emb.set_image(url='https://media.giphy.com/media/2y98KScHKeaQM/giphy.gif')    
     emb.set_footer(text=quote)
     
     msg = await ctx.channel.send(
-        '<@&934357238217326632> <@&934357238217326632> <@&934357238217326632>', 
+        '<@&938255659516969010> <@&938255659516969010> <@&938255659516969010>', 
         embed=emb)    
 
     await msg.add_reaction('✅') # check     
@@ -275,20 +313,23 @@ async def ratsignal(ctx):
         except asyncio.TimeoutError:
             break
 
+
 @bot.command(pass_context=True)
 async def rename(ctx, member: discord.Member, nick):
+    '''
+    Rename users in channel
+    '''
     prev = member.nick
     await member.edit(nick=nick)
     await ctx.send('{0} shall henceforward be known as... {1}!!!'.format(prev, nick))
     # await ctx.send(f'Nickname was changed for {member.mention}')
 
-@bot.command()
-async def ping(ctx):
-    await ctx.channel.send("pong")
 
 @bot.command()
 async def louvre(ctx):
-
+    '''
+    Randomly message channel with an image from louvre channel
+    '''
     channel = bot.get_channel(636799254152871936)
     # channel = bot.get_channel(934888003367764028)
 
@@ -307,6 +348,7 @@ async def louvre(ctx):
     emb = discord.Embed(title='A gift from the Louvre', color=16769251)
     # emb.add_field(name='Curator', value=random_msg.author.mention)
     # emb.add_field(name='Circa', value=random_msg.created_at.strftime('%Y-%m-%d'))
+    
     emb.set_image(url=random_msg.attachments[0].url)
     emb.set_footer(text='Curated by: {0}, circa {1}'.format(random_msg.author.name, random_msg.created_at.strftime('%Y-%m-%d')))
     
