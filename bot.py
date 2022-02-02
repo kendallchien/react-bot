@@ -157,7 +157,7 @@ async def ratsignal(ctx):
     print(author_id)
 
     emb_msg1 = '''
-        konichiwha you <@&938255659516969010>! {0} calls for aid!
+        konichiwha you <@&842451431403683891>! {0} calls for aid!
     '''.format(ctx.author.mention)
 
     results = rt.get_last_game_summary(author_id)
@@ -189,7 +189,7 @@ async def ratsignal(ctx):
     emb.set_footer(text=quote)
     
     msg = await ctx.channel.send(
-        '<@&938255659516969010> <@&938255659516969010> <@&938255659516969010>', 
+        '<@&842451431403683891> <@&842451431403683891> <@&842451431403683891>', 
         embed=emb)    
 
     await msg.add_reaction('✅') # check     
