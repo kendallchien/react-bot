@@ -73,26 +73,31 @@ def get_last_game_summary(discord_id):
 
 	aliases = get_summoner_aliases(discord_id)
 
-	dfs = []
+	if aliases: 
 
-	for alias in aliases:
-		puuid = get_puuid(alias)
-		dfs.append(get_last_match_df(puuid))
+		dfs = []
 
-	df = pd.concat(dfs)
+		for alias in aliases:
+			puuid = get_puuid(alias)
+			dfs.append(get_last_match_df(puuid))
 
-	most_recent_game = df['gameEndTimestamp'].max()
-	df = df[df['gameEndTimestamp'] == most_recent_game]
+		df = pd.concat(dfs)
 
-	out = {
-		'kills': df['kills'].values[0],
-		'deaths': df['deaths'].values[0],
-		'champion': df['champion'].values[0],
-		'win': df['win'].values[0]
+		most_recent_game = df['gameEndTimestamp'].max()
+		df = df[df['gameEndTimestamp'] == most_recent_game]
 
-	}
+		out = {
+			'kills': df['kills'].values[0],
+			'deaths': df['deaths'].values[0],
+			'champion': df['champion'].values[0],
+			'win': df['win'].values[0]
 
-	return out
+		}
+
+		return out
+
+	else: 
+		return none 
 
 results = get_last_game_summary(291788732544057355)
 
