@@ -26,6 +26,7 @@ intents.members = True
 # SET BOT COMMAND PREFIX
 bot = commands.Bot(command_prefix='!')
 
+
 @bot.event
 async def on_ready():
     # for guild in bot.guilds:
@@ -142,7 +143,7 @@ def get_win_url(win_probability):
 
 
 @bot.command(pass_context=True)
-async def ratsignal(ctx):
+async def ratsignal(ctx, case_insensitive=True):
     '''
     Send message poll to users in channel
     '''
@@ -153,26 +154,28 @@ async def ratsignal(ctx):
     cnt_ready = 0
     users = ''
 
-    print('------------------------------------------------------')
-    print(author_id)
-
     emb_msg1 = '''
         konichiwha you <@&842451431403683891>! {0} calls for aid!
     '''.format(ctx.author.mention)
 
     results = rt.get_last_game_summary(author_id)
 
+    if results: 
 
-    emb_msg2 = '''
-    FYI the last time this person played... they picked {0}, had {1} kills and {2} death, and {3} THE GAME
-    '''.format(results['champion'], results['kills'], results['deaths'], 'WON' if results['win'] else 'LOST')
+        emb_msg2 = '''
+        FYI the last time this person played... they picked {0}, had {1} kills and {2} death, and {3} THE GAME
+        '''.format(results['champion'], results['kills'], results['deaths'], 'WON' if results['win'] else 'LOST')
 
-    emb_msg = emb_msg1 + emb_msg2
+        emb_msg = emb_msg1 + emb_msg2
+
+    else:
+
+        emb_msg = emb_msg1 
 
     emb = discord.Embed(
             title='RATSIGNAL', 
             description=emb_msg, 
-            color=16769251)
+            color=8388564)
     emb.add_field(
             name='READY', 
             value='---', 
@@ -214,7 +217,7 @@ async def ratsignal(ctx):
                     'reaction_add',
                      check = check,
                      timeout=1800
-                 ), 
+                 ),
                 name='radd'
             ),
             asyncio.create_task(
@@ -262,11 +265,10 @@ async def ratsignal(ctx):
 
                         not_ready = len(user_list)
 
-
                 win_url = get_win_url(win_probability)
 
                 # create updated embed
-                emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=16769251)
+                emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=8388564)
                 emb1.set_image(url=win_url)
                 emb1.add_field(name='READY', value='({0}/5)'.format(str(cnt_ready)), inline=False)
                 emb1.add_field(name='RAT BASTARDS: ', value='HERE ALL USERS WITH ✅ \n' + users, inline=True)
@@ -300,7 +302,7 @@ async def ratsignal(ctx):
                 win_url = get_win_url(win_probability)                        
 
                 # create updated embed            
-                emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=16769251)
+                emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=8388564)
                 emb1.set_image(url=win_url)
                 emb1.add_field(name='READY', value='({0}/5)'.format(str(cnt_ready)), inline=False)
                 emb1.add_field(name='RAT BASTARDS: ', value='HERE ALL USERS WITH ✅ \n' + users, inline=True)
@@ -326,7 +328,7 @@ async def rename(ctx, member: discord.Member, nick):
 
 
 @bot.command()
-async def louvre(ctx):
+async def louvre(ctx, case_insensitive=True):
     '''
     Randomly message channel with an image from louvre channel
     '''
@@ -345,7 +347,7 @@ async def louvre(ctx):
 
     random_msg = random.choice(allmsg)
 
-    emb = discord.Embed(title='A gift from the Louvre', color=16769251)
+    emb = discord.Embed(title='A gift from the Louvre', color=8388564)
     # emb.add_field(name='Curator', value=random_msg.author.mention)
     # emb.add_field(name='Circa', value=random_msg.created_at.strftime('%Y-%m-%d'))
     
