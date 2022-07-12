@@ -24,7 +24,7 @@ intents = discord.Intents.default()
 intents.members = True
 
 # SET BOT COMMAND PREFIX
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 
 @bot.event
@@ -173,7 +173,7 @@ async def ratsignal(ctx, case_insensitive=True):
         emb_msg = emb_msg1 
 
     emb = discord.Embed(
-            title='RATSIGNAL', 
+            title='`ATSIGNAL', 
             description=emb_msg, 
             color=8388564)
     emb.add_field(
@@ -322,9 +322,44 @@ async def rename(ctx, member: discord.Member, nick):
     Rename users in channel
     '''
     prev = member.nick
-    await member.edit(nick=nick)
-    await ctx.send('{0} shall henceforward be known as... {1}!!!'.format(prev, nick))
+    try:
+        await member.edit(nick=nick)
+        await ctx.send('***{0}*** shall henceforward be known as... **{1}**!!!'.format(prev, nick))
+
+    except Exception as err:
+        await ctx.send('Cant let you do that starfox')
+        # ctx.send('Unexpected {0}. {1}'.format(err, type(err)))
+
+    # except HTTPException as err:
+    #     ctx.send('Unexpected {0}. {1}'.format(err, type(err)))        
+
+    # except TypeError as err:
+    #     ctx.send('Unexpected {0}. {1}'.format(err, type(err)))        
+
     # await ctx.send(f'Nickname was changed for {member.mention}')
+
+@bot.command()
+async def identify(ctx, role: discord.Role):
+    role_members = []
+    async for member in ctx.guild.fetch_members(limit=None):
+        for member_role in member.roles:
+            if member_role == role:
+                role_members.append(member.display_name)
+
+    embed=discord.Embed(title="The following users belong to the cult of {}".format(role), description='\n'.join(role_members), color=0x109319)
+    # embed.add_field(value='\n'.join(role_members), inline=False)
+
+    await ctx.send(embed=embed)
+
+
+
+
+
+    # for member in ctx.guild.fetch_members(limit=None):
+        # print(member)
+
+    # await ctx.send(members)
+
 
 
 @bot.command()
@@ -359,5 +394,8 @@ async def louvre(ctx, case_insensitive=True):
         random_msg.content,
         embed=emb
         )
+
+
+
 
 bot.run(TOKEN)
