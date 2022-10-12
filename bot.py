@@ -173,7 +173,7 @@ async def ratsignal(ctx, case_insensitive=True):
         emb_msg = emb_msg1 
 
     emb = discord.Embed(
-            title='`ATSIGNAL', 
+            title='RATSIGNAL', 
             description=emb_msg, 
             color=8388564)
     emb.add_field(
@@ -352,14 +352,10 @@ async def identify(ctx, role: discord.Role):
     await ctx.send(embed=embed)
 
 
-
-
-
     # for member in ctx.guild.fetch_members(limit=None):
         # print(member)
 
     # await ctx.send(members)
-
 
 
 @bot.command()
@@ -375,7 +371,7 @@ async def louvre(ctx, case_insensitive=True):
 
     allmsg = []
 
-    async for msg in channel.history(limit=300):
+    async for msg in channel.history(limit=1000):
         if hasattr(msg, 'attachments'):
             if len(msg.attachments) > 0:
                 allmsg.append(msg)
