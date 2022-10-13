@@ -62,7 +62,7 @@ def get_last_match_df(puuid):
 			participants_row['gameEndTimestamp'] = game_end_timestamp
 			participants_row['puuid'] = row['puuid']
 			participants_row['puuid_self'] = row['puuid']
-			participants_row['wards_placed'] = row['detectorWardsPlaced']
+			participants_row['wards_placed'] = row['wardsPlaced']
 			participants_row['position'] = row['individualPosition']
 			participants_row['assists'] = row['assists']
 	
@@ -95,7 +95,8 @@ def get_last_game_summary(discord_id):
 			'deaths': df['deaths'].values[0],
 			'assists': df['assists'].values[0],
 			'champion': df['champion'].values[0],
-			'win': df['win'].values[0]
+			'win': df['win'].values[0],
+			'wards': df['wards_placed'].values[0] 
 
 		}
 
@@ -104,6 +105,83 @@ def get_last_game_summary(discord_id):
 	else: 
 		return None
 
-results = get_last_game_summary(291788732544057355)
 
-# print('FYI the last time this person played... they picked {0}, had {1} kills and {2} death, and {3} THE GAME'.format(results['champion'], results['kills'], results['deaths'], 'WON' if results['win'] else 'LOST'))
+def get_most_recent_game_puuid(discord_id):
+
+	aliases = get_summoner_aliases(discord_id)
+
+	if aliases: 
+
+		dfs = [] 
+
+		for alias in aliases:
+			puuid = get_puuid(alias)
+			dfs.append(get_last_match_df(puuid))
+
+		df = pd.concat(dfs)
+
+		most_recent_game = df['gameEndTimestamp'].max()
+		df = df[df['gameEndTimestamp'] == most_recent_game]	
+		puuid = df.iloc[0]['puuid']
+
+		return puuid
+
+	else:
+		return None
+
+
+# get last match from player ID
+def get_matches(puuid, n=1):
+	'''
+	get last match summary from puuid
+	'''
+
+	cols = [
+		'summonerName',
+		'championName',
+		'kills',
+		'deaths',
+		'assists'
+		# 'gameEndedInSurrender',
+		# 'goldEarned',
+		# 'individualPosition',
+		# 'win'
+	]
+
+	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid)
+	last_match = my_matches[n-1]
+	match_detail = watcher.match.by_id(region='americas', match_id=my_matches[n-1])
+	game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
+	match_participants = match_detail.get('info').get('participants')
+
+
+
+	d = pd.DataFrame(match_participants)
+	d_limited = d[cols]
+	
+	return d_limited.to_markdown(tablefmt='grid', showindex=False)
+
+	# print(match_detail)
+
+	# participants = []
+	# for row in match_participants:
+	# 	if puuid == row['puuid']:
+	# 		participants_row = {}
+	# 		participants_row['champion'] = row['championName']
+	# 		participants_row['kills'] = row['kills']
+	# 		participants_row['deaths'] = row['deaths']
+	# 		participants_row['summonerName'] = row['summonerName']
+	# 		participants_row['win'] = row['win']
+	# 		participants_row['gameEndTimestamp'] = game_end_timestamp
+	# 		participants_row['puuid'] = row['puuid']
+	# 		participants_row['puuid_self'] = row['puuid']
+	# 		participants_row['wards_placed'] = row['wardsPlaced']
+	# 		participants_row['position'] = row['individualPosition']
+	# 		participants_row['assists'] = row['assists']
+	
+	# 		participants.append(participants_row)
+
+	# df = pd.DataFrame(participants)
+
+	return match_detail
+

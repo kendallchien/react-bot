@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import datetime
 import riot as rt
+import pandas as pd
 
 with open('img.yaml') as f:
 
@@ -28,7 +29,6 @@ intents.message_content = True
 # SET BOT COMMAND PREFIX
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-
 @bot.event
 async def on_ready():
     # for guild in bot.guilds:
@@ -37,7 +37,6 @@ async def on_ready():
 
     print('We have logged in as {0.user}'.format(bot))
     # print('Joining {0.id}'.format(guild))
-
 
 @bot.event
 async def on_raw_reaction_add(payload):
@@ -145,29 +144,54 @@ def get_win_url(win_probability):
 
 
 @bot.command(pass_context=True)
-async def ratsignal(ctx, role='<@&842451431403683891>', case_insensitive=True):
+async def ratsignal(ctx, *tags , case_insensitive=True):
     '''
     Send message poll to users in channel
     '''
+
+
     quote = random.choice(data.get('emiya'))
+    league_of_l_role = '<@&842451431403683891>'
     win_probability = random.randint(0, 100)
     author_id = ctx.author.id
     coward_users = ''
     cnt_ready = 0
     users = ''
 
-    emb_msg1 = '''
-        konnichiwa {0}, {1} calls for aid!
-    '''.format(role, ctx.author.mention)    
+
+    guild_id = ctx.guild.id
+
+
+    if len(tags) != 0:
+        tags = ' '.join(map(str, tags))
+
+
+    if guild_id == 83311868432617472 and len(tags) == 0:
+
+        emb_msg1 = '''
+            konnichiwa {0}, {1} calls for aid!
+        '''.format(league_of_l_role, ctx.author.mention)
+
+    elif len(tags) == 0:
+
+        emb_msg1 = '''
+            konnichiwa! {1} calls for aid!
+        '''.format(league_of_l_role, ctx.author.mention)        
+
+    else: 
+
+        emb_msg1 = '''
+            konnichiwa {0}, {1} calls for aid!
+        '''.format(tags, ctx.author.mention)            
 
     results = rt.get_last_game_summary(author_id)
 
     if results: 
 
         emb_msg2 = '''
-        *FYI the last time this person played... they picked {0}, had {1} kills, {2} assists, {3} deaths, and {4} THE GAME*
+        *FYI the last time this person played Weeg o Wegends... they picked {0}, had **{1}** kills, **{2}** assists, **{3}** deaths, and **{4}** THE GAME...and they also placed **{5}** wards!*
         
-        '''.format(results['champion'], results['kills'], results['assists'], results['deaths'], 'WON' if results['win'] else 'LOST')
+        '''.format(results['champion'], results['kills'], results['assists'], results['deaths'], 'WON' if results['win'] else 'LOST', results['wards'])
 
         emb_msg = emb_msg1 + emb_msg2
 
@@ -430,5 +454,49 @@ async def louvre(ctx, case_insensitive=True):
         embed=emb
         )
 
+
+@bot.command()
+async def lastgame(ctx, discord_user=None, case_insensitive=True):
+    '''
+    get last leg of legend game results
+    '''
+    try:
+
+        if discord_user == None:
+            first_member_id = ctx.author.id
+
+        else:
+            # discord id from discord user
+            members = ctx.message.mentions
+            first_member_id = members[0].id
+
+        puuid = rt.get_most_recent_game_puuid(first_member_id)
+
+        # get puuid of most recent game 
+
+        last_game_summary = rt.get_matches(puuid)
+
+        msg = '''
+```fix
+{0}
+
+```
+        '''.format(last_game_summary)
+
+
+        await ctx.send(msg)
+
+    except:
+        msg = '''
+        ```diff
+- Are you sure you belong here?
+```'''
+        await ctx.send(msg)
+
+    # get puuid from discord user name
+
+    # get last game if multiple aliases 
+
+    # return details of last game 
 
 bot.run(TOKEN)
