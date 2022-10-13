@@ -22,6 +22,8 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
+
 
 # SET BOT COMMAND PREFIX
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -143,7 +145,7 @@ def get_win_url(win_probability):
 
 
 @bot.command(pass_context=True)
-async def ratsignal(ctx, case_insensitive=True):
+async def ratsignal(ctx, role='<@&842451431403683891>', case_insensitive=True):
     '''
     Send message poll to users in channel
     '''
@@ -155,16 +157,17 @@ async def ratsignal(ctx, case_insensitive=True):
     users = ''
 
     emb_msg1 = '''
-        konichiwha you <@&842451431403683891>! {0} calls for aid!
-    '''.format(ctx.author.mention)
+        konnichiwa {0}, {1} calls for aid!
+    '''.format(role, ctx.author.mention)    
 
     results = rt.get_last_game_summary(author_id)
 
     if results: 
 
         emb_msg2 = '''
-        FYI the last time this person played... they picked {0}, had {1} kills and {2} death, and {3} THE GAME
-        '''.format(results['champion'], results['kills'], results['deaths'], 'WON' if results['win'] else 'LOST')
+        *FYI the last time this person played... they picked {0}, had {1} kills, {2} assists, {3} deaths, and {4} THE GAME*
+        
+        '''.format(results['champion'], results['kills'], results['assists'], results['deaths'], 'WON' if results['win'] else 'LOST')
 
         emb_msg = emb_msg1 + emb_msg2
 
@@ -177,23 +180,17 @@ async def ratsignal(ctx, case_insensitive=True):
             description=emb_msg, 
             color=8388564)
     emb.add_field(
-            name='READY', 
+            name='**RAT BASTARDS** ✅:', 
             value='---', 
-            inline=False)
-    emb.add_field(
-            name='Rat Bastards: ', 
-            value='HERE ALL USERS WITH ✅', 
             inline=True)
     emb.add_field(
-            name='COWARDS: ', 
+            name='**COWARDS** ❌:', 
             value='---', 
             inline=True)
     emb.set_image(url='https://media.giphy.com/media/2y98KScHKeaQM/giphy.gif')    
     emb.set_footer(text=quote)
     
-    msg = await ctx.channel.send(
-        '<@&842451431403683891> <@&842451431403683891> <@&842451431403683891>', 
-        embed=emb)    
+    msg = await ctx.channel.send('\u200b', embed=emb)    
 
     await msg.add_reaction('✅') # check     
     await msg.add_reaction('❌') # x
@@ -265,15 +262,37 @@ async def ratsignal(ctx, case_insensitive=True):
 
                         not_ready = len(user_list)
 
+                if users == '':
+                    users = '---'
+
+                if coward_users == '':
+                    coward_users = '---'
+
                 win_url = get_win_url(win_probability)
 
                 # create updated embed
-                emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=8388564)
+                emb1 = discord.Embed(
+                    title='RATSIGNAL', 
+                    description=emb_msg, 
+                    color=8388564)
+                
                 emb1.set_image(url=win_url)
-                emb1.add_field(name='READY', value='({0}/5)'.format(str(cnt_ready)), inline=False)
-                emb1.add_field(name='RAT BASTARDS: ', value='HERE ALL USERS WITH ✅ \n' + users, inline=True)
-                emb1.add_field(name='COWARDS: ', value='--- \n' + coward_users, inline=True)                
-                emb1.add_field(name='Win Probability: ', value='{0}%'.format(win_probability), inline=False)
+                
+                emb1.add_field(
+                    name='**RAT BASTARDS** ({0}/5) ✅:'.format(str(cnt_ready)), 
+                    value='\u200b' + users, 
+                    inline=True)
+                
+                emb1.add_field(
+                    name='**COWARDS** ❌:', 
+                    value='\u200b' + coward_users, 
+                    inline=True)
+                
+                emb1.add_field(
+                    name='Win Probability: ', 
+                    value='{0}%'.format(win_probability), 
+                    inline=False)
+                
                 emb1.set_footer(text=quote)
 
                 await msg.edit(embed = emb1)
@@ -299,15 +318,37 @@ async def ratsignal(ctx, case_insensitive=True):
 
                         not_ready = len(user_list)    
 
+                if users == '':
+                    users = '---'
+
+                if coward_users == '':
+                    coward_users = '---'                        
+
                 win_url = get_win_url(win_probability)                        
 
                 # create updated embed            
-                emb1 = discord.Embed(title='RATSIGNAL', description=emb_msg, color=8388564)
+                emb1 = discord.Embed(
+                    title='RATSIGNAL', 
+                    description=emb_msg, 
+                    color=8388564)
+                
                 emb1.set_image(url=win_url)
-                emb1.add_field(name='READY', value='({0}/5)'.format(str(cnt_ready)), inline=False)
-                emb1.add_field(name='RAT BASTARDS: ', value='HERE ALL USERS WITH ✅ \n' + users, inline=True)
-                emb1.add_field(name='COWARDS: ', value='--- \n' + coward_users, inline=True)                
-                emb1.add_field(name='Win Probability: ', value='{0}%'.format(win_probability), inline=False) 
+                
+                emb1.add_field(
+                    name='**RAT BASTARDS** ({0}/5) ✅:'.format(str(cnt_ready)), 
+                    value='\u200b' + users, 
+                    inline=True)
+                
+                emb1.add_field(
+                    name='**COWARDS** ❌:', 
+                    value='\u200b' + coward_users, 
+                    inline=True)
+                
+                emb1.add_field(
+                    name='Win Probability: ', 
+                    value='{0}%'.format(win_probability), 
+                    inline=False)
+                
                 emb1.set_footer(text=quote)
 
                 await msg.edit(embed = emb1)
@@ -363,11 +404,9 @@ async def louvre(ctx, case_insensitive=True):
     '''
     Randomly message channel with an image from louvre channel
     '''
+
     channel = bot.get_channel(636799254152871936)
     # channel = bot.get_channel(934888003367764028)
-
-    # 636799254152871936
-    # 934888003367764028
 
     allmsg = []
 
@@ -390,8 +429,6 @@ async def louvre(ctx, case_insensitive=True):
         random_msg.content,
         embed=emb
         )
-
-
 
 
 bot.run(TOKEN)

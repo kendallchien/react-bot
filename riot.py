@@ -61,7 +61,11 @@ def get_last_match_df(puuid):
 			participants_row['win'] = row['win']
 			participants_row['gameEndTimestamp'] = game_end_timestamp
 			participants_row['puuid'] = row['puuid']
-			participants_row['puuid_self'] = puuid
+			participants_row['puuid_self'] = row['puuid']
+			participants_row['wards_placed'] = row['detectorWardsPlaced']
+			participants_row['position'] = row['individualPosition']
+			participants_row['assists'] = row['assists']
+	
 			participants.append(participants_row)
 
 	df = pd.DataFrame(participants)
@@ -75,7 +79,7 @@ def get_last_game_summary(discord_id):
 
 	if aliases: 
 
-		dfs = []
+		dfs = [] 
 
 		for alias in aliases:
 			puuid = get_puuid(alias)
@@ -89,6 +93,7 @@ def get_last_game_summary(discord_id):
 		out = {
 			'kills': df['kills'].values[0],
 			'deaths': df['deaths'].values[0],
+			'assists': df['assists'].values[0],
 			'champion': df['champion'].values[0],
 			'win': df['win'].values[0]
 
@@ -97,7 +102,7 @@ def get_last_game_summary(discord_id):
 		return out
 
 	else: 
-		return none 
+		return None
 
 results = get_last_game_summary(291788732544057355)
 
