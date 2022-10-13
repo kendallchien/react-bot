@@ -141,7 +141,8 @@ def get_matches(puuid, n=1):
 		'championName',
 		'kills',
 		'deaths',
-		'assists'
+		'assists',
+		'win'
 		# 'gameEndedInSurrender',
 		# 'goldEarned',
 		# 'individualPosition',
@@ -154,10 +155,10 @@ def get_matches(puuid, n=1):
 	game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
 	match_participants = match_detail.get('info').get('participants')
 
-
-
 	d = pd.DataFrame(match_participants)
 	d_limited = d[cols]
+
+
 	
 	return d_limited.to_markdown(tablefmt='grid', showindex=False)
 
