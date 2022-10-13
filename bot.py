@@ -486,7 +486,8 @@ async def lastgame(ctx, discord_user=None, case_insensitive=True):
 
         await ctx.send(msg)
 
-    except:
+    except Exception as e:
+        print(e)
         msg = '''
         ```diff
 - Are you sure you belong here?
