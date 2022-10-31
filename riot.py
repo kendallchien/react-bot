@@ -158,8 +158,6 @@ def get_matches(puuid, n=1):
 	d = pd.DataFrame(match_participants)
 	d_limited = d[cols]
 
-
-	
 	return d_limited.to_markdown(tablefmt='grid', showindex=False)
 
 	# print(match_detail)
