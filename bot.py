@@ -20,8 +20,8 @@ with open('img.yaml') as f:
 load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
-# TOKEN = os.getenv('DISCORD_TOKEN')
-TOKEN = os.getenv('DISCORD_TOKEN_TEST')
+TOKEN = os.getenv('DISCORD_TOKEN')
+# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 # GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.default()
@@ -564,8 +564,8 @@ class MyView(View):
 @bot.command()
 async def crown(ctx, member: discord.Member):
 
-    # crown_role = ctx.guild.get_role(1036779018785132566) -- yahallo
-    crown_role = ctx.guild.get_role(1036813094749483088)
+    crown_role = ctx.guild.get_role(1036779018785132566) -- yahallo
+    # crown_role = ctx.guild.get_role(1036813094749483088)
 
     if len(crown_role.members) == 0:
         content = 'there are no crowns in this land!'
