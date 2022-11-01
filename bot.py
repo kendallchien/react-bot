@@ -535,7 +535,7 @@ async def lastgame(ctx, discord_user=None, case_insensitive=True):
 class MyView(View):
 
     def __init__(self, ctx, content):
-        super().__init__(timeout=25)
+        super().__init__(timeout=15)
         self.ctx = ctx
         self.content = content 
         self.yes_count = 0
