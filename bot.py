@@ -20,8 +20,8 @@ with open('img.yaml') as f:
 load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
-TOKEN = os.getenv('DISCORD_TOKEN')
-# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
+# TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 # GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.default()
@@ -546,14 +546,14 @@ class MyView(View):
         self.yes_count += 1 
         button.label = "Yes: {}".format(self.yes_count)
         # await interaction.response.send_message('{} aids the usurper'.format(self.ctx.author.mention))
-        self.content = self.content + '\n' + '- ⚔️ ' + self.ctx.author.name
+        self.content = self.content + '\n' + '- ⚔️ ' + interaction.user.name
         await interaction.response.edit_message(content = self.content, view=self)
         
     @discord.ui.button(label="No!", style=discord.ButtonStyle.red, custom_id="danger")
     async def no_button_callback(self, interaction, button):
         self.no_count += 1 
         button.label = "No: {}".format(self.no_count)
-        self.content = self.content + '\n' + '- 🛡️ ' + self.ctx.author.name
+        self.content = self.content + '\n' + '- 🛡️ ' + interaction.user.name
         # await interaction.response.send_message('{} cowers in fear'.format(self.ctx.author.mention))        
         await interaction.response.edit_message(content = self.content, view=self)
         
@@ -564,7 +564,8 @@ class MyView(View):
 @bot.command()
 async def crown(ctx, member: discord.Member):
 
-    crown_role = ctx.guild.get_role(1036779018785132566)
+    # crown_role = ctx.guild.get_role(1036779018785132566) -- yahallo
+    crown_role = ctx.guild.get_role(1036813094749483088)
 
     if len(crown_role.members) == 0:
         content = 'there are no crowns in this land!'
