@@ -564,7 +564,7 @@ class MyView(View):
 @bot.command()
 async def crown(ctx, member: discord.Member):
 
-    crown_role = ctx.guild.get_role(1036813094749483088)
+    crown_role = ctx.guild.get_role(1036779018785132566)
 
     if len(crown_role.members) == 0:
         content = 'there are no crowns in this land!'
@@ -582,8 +582,7 @@ async def crown(ctx, member: discord.Member):
     if len(crown_role.members) > 0:
 
         if view.yes_count > view.no_count:
-            role = ctx.guild.get_role(1036813094749483088)
-            await member.add_roles(role)
+            await member.add_roles(crown_role)
             await current_crown.remove_roles(role)
             await ctx.send('👑👑👑 {0} has been CROWNED...so help us all 👑👑👑'.format(member.mention))
 
@@ -595,8 +594,7 @@ async def crown(ctx, member: discord.Member):
 
     else:
         if view.yes_count > view.no_count:
-            role = ctx.guild.get_role(1036813094749483088)
-            await member.add_roles(role)
+            await member.add_roles(crown_role)
             await current_crown.remove_roles(role)
             await ctx.send('👑👑👑 {0} first of their name! 👑👑👑'.format(member.mention))
 
