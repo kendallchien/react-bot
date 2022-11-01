@@ -564,7 +564,7 @@ class MyView(View):
 @bot.command()
 async def crown(ctx, member: discord.Member):
 
-    crown_role = ctx.guild.get_role(1036779018785132566) -- yahallo
+    crown_role = ctx.guild.get_role(1036779018785132566)
     # crown_role = ctx.guild.get_role(1036813094749483088)
 
     if len(crown_role.members) == 0:
