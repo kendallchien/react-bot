@@ -1,4 +1,5 @@
 import discord
+import numpy as np
 import os
 import asyncio
 import random
@@ -6,6 +7,7 @@ import yaml
 import time
 from dotenv import load_dotenv
 from discord.ext import commands
+from discord.ui import Button, View
 from datetime import datetime
 import riot as rt
 import pandas as pd
@@ -19,6 +21,7 @@ load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
 TOKEN = os.getenv('DISCORD_TOKEN')
+# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 # GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.default()
@@ -417,12 +420,6 @@ async def identify(ctx, role: discord.Role):
     await ctx.send(embed=embed)
 
 
-    # for member in ctx.guild.fetch_members(limit=None):
-        # print(member)
-
-    # await ctx.send(members)
-
-
 @bot.command()
 async def louvre(ctx, case_insensitive=True):
     '''
@@ -499,5 +496,112 @@ async def lastgame(ctx, discord_user=None, case_insensitive=True):
     # get last game if multiple aliases 
 
     # return details of last game 
+
+
+# class GreenButton(Button):
+#     def __init__(self, label):
+#         super().__init__(label=label, style=discord.ButtonStyle.green)
+
+#     async def callback(self, interaction):
+#         nonlocal yes_counter
+#         yes_counter +=1
+#         await interaction.response.edit_message(content="Touched Me! yes: {0} no: {1}".format(yes_counter, no_counter))
+
+# class RedButton(Button):
+#     def __init__(self, label):
+#         super().__init__(label=label, style=discord.ButtonStyle.green)
+
+#     async def callback(self, interaction):
+#         nonlocal yes_counter
+#         yes_counter +=1
+#         await interaction.response.edit_message(content="Touched Me! yes: {0} no: {1}".format(yes_counter, no_counter))
+
+
+
+    emb = discord.Embed(
+            title='RATSIGNAL', 
+            description='hi', 
+            color=8388564)
+    emb.add_field(
+            name='✅:', 
+            value='---', 
+            inline=True)
+    emb.add_field(
+            name='❌:', 
+            value='---', 
+            inline=True)
+
+
+class MyView(View):
+
+    def __init__(self, ctx, content):
+        super().__init__(timeout=25)
+        self.ctx = ctx
+        self.content = content 
+        self.yes_count = 0
+        self.no_count = 0
+
+    @discord.ui.button(label="Yes!", style=discord.ButtonStyle.green)
+    async def yes_button_callback(self, interaction, button):  
+        self.yes_count += 1 
+        button.label = "Yes: {}".format(self.yes_count)
+        # await interaction.response.send_message('{} aids the usurper'.format(self.ctx.author.mention))
+        self.content = self.content + '\n' + '- ⚔️ ' + self.ctx.author.name
+        await interaction.response.edit_message(content = self.content, view=self)
+        
+    @discord.ui.button(label="No!", style=discord.ButtonStyle.red, custom_id="danger")
+    async def no_button_callback(self, interaction, button):
+        self.no_count += 1 
+        button.label = "No: {}".format(self.no_count)
+        self.content = self.content + '\n' + '- 🛡️ ' + self.ctx.author.name
+        # await interaction.response.send_message('{} cowers in fear'.format(self.ctx.author.mention))        
+        await interaction.response.edit_message(content = self.content, view=self)
+        
+    async def on_timeout(self) -> None:
+        await self.ctx.send("Times up!")
+        return 
+
+@bot.command()
+async def crown(ctx, member: discord.Member):
+
+    crown_role = ctx.guild.get_role(1036813094749483088)
+
+    if len(crown_role.members) == 0:
+        content = 'there are no crowns in this land!'
+
+    else:
+        current_crown = crown_role.members[0]
+        actions = ['to storm the capital', 'a mutiny', 'to usurp the throne']
+        content = '{0} has proposed {1} and pass the crown from {2} to {3}'.format(ctx.author.mention, np.random.choice(actions), current_crown.mention, member.mention)
+
+    view = MyView(ctx, content)
+    await ctx.send(content, view=view)
+    await view.wait()
+
+
+    if len(crown_role.members) > 0:
+
+        if view.yes_count > view.no_count:
+            role = ctx.guild.get_role(1036813094749483088)
+            await member.add_roles(role)
+            await current_crown.remove_roles(role)
+            await ctx.send('👑👑👑 {0} has been CROWNED...so help us all 👑👑👑'.format(member.mention))
+
+        elif view.yes_count == view.no_count:
+            await ctx.send('A tie... {0} retains their throne'.format(current_crown.mention))
+
+        elif view.yes_count < view.no_count:    
+            await ctx.send('An attempt was made by a loser, but {0} retains their throne'.format(current_crown.mention))
+
+    else:
+        if view.yes_count > view.no_count:
+            role = ctx.guild.get_role(1036813094749483088)
+            await member.add_roles(role)
+            await current_crown.remove_roles(role)
+            await ctx.send('👑👑👑 {0} first of their name! 👑👑👑'.format(member.mention))
+
+        else:
+            await ctx.send('{0} went against no one and still lost!'.format(member.mention))            
+
 
 bot.run(TOKEN)
