@@ -583,7 +583,7 @@ async def crown(ctx, member: discord.Member):
 
         if view.yes_count > view.no_count:
             await member.add_roles(crown_role)
-            await current_crown.remove_roles(role)
+            await current_crown.remove_roles(crown_role)
             await ctx.send('👑👑👑 {0} has been CROWNED...so help us all 👑👑👑'.format(member.mention))
 
         elif view.yes_count == view.no_count:
