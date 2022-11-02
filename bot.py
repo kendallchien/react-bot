@@ -20,8 +20,8 @@ with open('img.yaml') as f:
 load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
-TOKEN = os.getenv('DISCORD_TOKEN')
-# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
+# TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 # GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.default()
@@ -453,15 +453,20 @@ async def louvre(ctx, case_insensitive=True):
 
 
 @bot.command()
-async def lastgame(ctx, discord_user=None, case_insensitive=True):
+async def lastgame(ctx, discord_user=None, n_games=1, case_insensitive=True):
     '''
     get last leg of legend game results
     '''
+
+    # fetch puuid of member mentioned
+
     try:
 
+        # if no user is mentioned, use author's ID
         if discord_user == None:
             first_member_id = ctx.author.id
 
+        # if discord_user param is passed then use mentioned user
         else:
             # discord id from discord user
             members = ctx.message.mentions
@@ -471,15 +476,41 @@ async def lastgame(ctx, discord_user=None, case_insensitive=True):
 
         # get puuid of most recent game 
 
-        last_game_summary = rt.get_matches(puuid)
+        matches_df = rt.last_n_match_details_df(puuid, n_games)
+
+        if n_games == 1:
+            cols = [
+                'summonerName',
+                'championName',
+                'kills',
+                'deaths',
+                'assists',
+                'win'
+            ]
+            matches_formatted = rt.tablefy(matches_df, cols)
+
+        if n_games > 1:
+            cols = [
+                'summonerName',
+                'championName',
+                'kills',
+                'deaths',
+                'assists',
+                'win'
+            ]
+
+
+
+            member_only_results_df = matches_df[matches_df['puuid'] == puuid]
+
+            matches_formatted = rt.tablefy(member_only_results_df, cols)
 
         msg = '''
 ```fix
 {0}
 
 ```
-        '''.format(last_game_summary)
-
+        '''.format(matches_formatted)
 
         await ctx.send(msg)
 
@@ -490,46 +521,6 @@ async def lastgame(ctx, discord_user=None, case_insensitive=True):
 - Are you sure you belong here?
 ```'''
         await ctx.send(msg)
-
-    # get puuid from discord user name
-
-    # get last game if multiple aliases 
-
-    # return details of last game 
-
-
-# class GreenButton(Button):
-#     def __init__(self, label):
-#         super().__init__(label=label, style=discord.ButtonStyle.green)
-
-#     async def callback(self, interaction):
-#         nonlocal yes_counter
-#         yes_counter +=1
-#         await interaction.response.edit_message(content="Touched Me! yes: {0} no: {1}".format(yes_counter, no_counter))
-
-# class RedButton(Button):
-#     def __init__(self, label):
-#         super().__init__(label=label, style=discord.ButtonStyle.green)
-
-#     async def callback(self, interaction):
-#         nonlocal yes_counter
-#         yes_counter +=1
-#         await interaction.response.edit_message(content="Touched Me! yes: {0} no: {1}".format(yes_counter, no_counter))
-
-
-
-    emb = discord.Embed(
-            title='RATSIGNAL', 
-            description='hi', 
-            color=8388564)
-    emb.add_field(
-            name='✅:', 
-            value='---', 
-            inline=True)
-    emb.add_field(
-            name='❌:', 
-            value='---', 
-            inline=True)
 
 
 class MyView(View):

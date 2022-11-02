@@ -136,51 +136,35 @@ def get_matches(puuid, n=1):
 	get last match summary from puuid
 	'''
 
-	cols = [
-		'summonerName',
-		'championName',
-		'kills',
-		'deaths',
-		'assists',
-		'win'
-		# 'gameEndedInSurrender',
-		# 'goldEarned',
-		# 'individualPosition',
-		# 'win'
-	]
-
 	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid)
-	last_match = my_matches[n-1]
-	match_detail = watcher.match.by_id(region='americas', match_id=my_matches[n-1])
-	game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
-	match_participants = match_detail.get('info').get('participants')
+	last_n_match_ids = my_matches[0:n]
 
-	d = pd.DataFrame(match_participants)
+	return last_n_match_ids
+
+
+def last_n_match_details_df(puuid, n):
+
+	match_results = []
+
+	last_n_match_ids = get_matches(puuid, n)
+
+	for match_id in last_n_match_ids:
+		match_detail = watcher.match.by_id(region='americas', match_id=match_id)
+		game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
+		match_participants = match_detail.get('info').get('participants')
+		match_results.append(pd.DataFrame(match_participants))
+
+	return pd.concat(match_results)
+	
+
+def tablefy(data, cols):
+
+	d = pd.DataFrame(data)
 	d_limited = d[cols]
 
 	return d_limited.to_markdown(tablefmt='grid', showindex=False)
 
-	# print(match_detail)
 
-	# participants = []
-	# for row in match_participants:
-	# 	if puuid == row['puuid']:
-	# 		participants_row = {}
-	# 		participants_row['champion'] = row['championName']
-	# 		participants_row['kills'] = row['kills']
-	# 		participants_row['deaths'] = row['deaths']
-	# 		participants_row['summonerName'] = row['summonerName']
-	# 		participants_row['win'] = row['win']
-	# 		participants_row['gameEndTimestamp'] = game_end_timestamp
-	# 		participants_row['puuid'] = row['puuid']
-	# 		participants_row['puuid_self'] = row['puuid']
-	# 		participants_row['wards_placed'] = row['wardsPlaced']
-	# 		participants_row['position'] = row['individualPosition']
-	# 		participants_row['assists'] = row['assists']
-	
-	# 		participants.append(participants_row)
 
-	# df = pd.DataFrame(participants)
 
-	return match_detail
 
