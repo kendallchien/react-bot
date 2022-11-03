@@ -22,7 +22,7 @@ class league(commands.Cog):
         self._last_member = None
 
     @commands.command()
-    async def ratsignal2(self, ctx, *tags , case_insensitive=True):
+    async def ratsignal(self, ctx, *tags , case_insensitive=True):
 
         league_of_l_role = '<@&842451431403683891>'      
         author_id = ctx.author.id
