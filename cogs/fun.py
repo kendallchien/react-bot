@@ -74,8 +74,8 @@ class fun(commands.Cog):
     @commands.command()
     async def crown(self, ctx, member: discord.Member):
 
-        # crown_role = ctx.guild.get_role(1036779018785132566)
-        crown_role = ctx.guild.get_role(1036813094749483088) #test server
+        crown_role = ctx.guild.get_role(1036779018785132566)
+        # crown_role = ctx.guild.get_role(1036813094749483088) #test server
 
         if len(crown_role.members) == 0:
             content = 'there are no crowns in this land!'
