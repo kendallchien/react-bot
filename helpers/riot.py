@@ -1,8 +1,8 @@
 from riotwatcher import LolWatcher, ApiError
 from dotenv import load_dotenv
 import pandas as pd
-import yaml
 import os
+import yaml
 
 load_dotenv()
 
@@ -11,10 +11,8 @@ api_key = os.getenv('RIOT_API_KEY')
 
 watcher = LolWatcher(api_key)
 
-
 with open('summoners.yaml') as f:
     roster = yaml.load(f, Loader=yaml.FullLoader)
-
 
 # get player ID from discord name 
 def get_summoner_aliases(discord_id):
@@ -39,7 +37,6 @@ def get_puuid(summoner_name):
 	return puuid
 
 
-# get last match from player ID
 def get_last_match_df(puuid):
 	'''
 	get last match summary from puuid
@@ -107,6 +104,9 @@ def get_last_game_summary(discord_id):
 
 
 def get_most_recent_game_puuid(discord_id):
+	'''
+	determine puuid for most recent game if user has multiple aliases
+	'''
 
 	aliases = get_summoner_aliases(discord_id)
 
@@ -130,12 +130,10 @@ def get_most_recent_game_puuid(discord_id):
 		return None
 
 
-# get last match from player ID
 def get_matches(puuid, n=1):
 	'''
-	get last match summary from puuid
+	get match IDs from last n matches
 	'''
-
 	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid)
 	last_n_match_ids = my_matches[0:n]
 
@@ -154,7 +152,10 @@ def last_n_match_details_df(puuid, n):
 		match_participants = match_detail.get('info').get('participants')
 		match_results.append(pd.DataFrame(match_participants))
 
-	return pd.concat(match_results)
+	all_match_reusults = pd.concat(match_results)
+	all_match_reusults['result'] = [ 'W' if x == True else 'L' for x in all_match_reusults['win']]
+
+	return all_match_reusults
 	
 
 def tablefy(data, cols):
@@ -162,9 +163,5 @@ def tablefy(data, cols):
 	d = pd.DataFrame(data)
 	d_limited = d[cols]
 
-	return d_limited.to_markdown(tablefmt='grid', showindex=False)
-
-
-
-
+	return d_limited.to_markdown(tablefmt='fancy_grid', showindex=False)
 
