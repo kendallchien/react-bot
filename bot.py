@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
-# TOKEN = os.getenv('DISCORD_TOKEN')
-TOKEN = os.getenv('DISCORD_TOKEN_TEST')
+TOKEN = os.getenv('DISCORD_TOKEN')
+# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 # GUILD = os.getenv('DISCORD_GUILD')
 
 intents = discord.Intents.default()
