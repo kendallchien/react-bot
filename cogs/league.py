@@ -1,10 +1,5 @@
-import os
 import discord
 import numpy as np
-import asyncio
-import random
-import yaml
-import time
 from dotenv import load_dotenv
 from discord.ext import commands
 from discord.ui import Button, View
@@ -401,6 +396,7 @@ class league(commands.Cog):
             # if no user is mentioned, use author's ID
             if discord_user == None:
                 first_member_id = ctx.author.id
+                print('no author')
 
             # if discord_user param is passed then use mentioned user
             else:
@@ -410,43 +406,21 @@ class league(commands.Cog):
 
             puuid = rt.get_most_recent_game_puuid(first_member_id)
 
+            print(puuid)
+
             # get puuid of most recent game 
 
             matches_df = rt.last_n_match_details_df(puuid, n_games)
 
-            if n_games == 1:
-                cols = [
-                    'summonerName',
-                    'championName',
-                    # 'role',
-                    'kills',
-                    'deaths',
-                    'assists',
-                    'result'
-                ]
-                matches_formatted = rt.tablefy(matches_df, cols)
+            print(matches_df)
 
-            if n_games > 1:
-                cols = [
-                    'summonerName',
-                    'championName',
-                    # 'role',
-                    'kills',
-                    'deaths',
-                    'assists',
-                    'result'
-                ]
+            matches_formatted = rt.last_n_match_table(matches_df, puuid, n_games)
 
-                member_only_results_df = matches_df[matches_df['puuid'] == puuid]
+            print(matches_formatted)
 
-                matches_formatted = rt.tablefy(member_only_results_df, cols)
-
-            msg = '''
-    ```fix
+            msg = '''```fix
 {0}
-
-    ```
-            '''.format(matches_formatted)
+    ```'''.format(matches_formatted)
 
             await ctx.send(msg)
 

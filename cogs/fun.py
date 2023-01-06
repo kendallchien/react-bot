@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import numpy as np
 import asyncio
+import random
 
 
 class MyView(discord.ui.View):
@@ -18,7 +19,11 @@ class MyView(discord.ui.View):
         self.yes_count += 1 
         button.label = "Yes: {}".format(self.yes_count)
         # await interaction.response.send_message('{} aids the usurper'.format(self.ctx.author.mention))
-        self.content = self.content + '\n' + '- ⚔️ ' + interaction.user.name
+        random_int = random.randint(0,10)
+        if random_int > 2:
+            self.content = self.content + '\n' + '- ⚔️ ' + interaction.user.name
+        else: 
+            self.content = self.content + '\n' + '- 🍆 ' + interaction.user.name
         await interaction.response.edit_message(content = self.content, view=self)
         
     @discord.ui.button(label="No!", style=discord.ButtonStyle.red, custom_id="danger")
@@ -82,7 +87,7 @@ class fun(commands.Cog):
 
         else:
             current_crown = crown_role.members[0]
-            actions = ['to storm the capital', 'a mutiny', 'to usurp the throne']
+            actions = ['to storm the capital', 'a mutiny', 'to usurp the throne', 'to challenge our dear leader']
             content = '{0} has proposed {1} and pass the crown from {2} to {3}'.format(ctx.author.mention, np.random.choice(actions), current_crown.mention, member.mention)
 
         view=MyView(ctx, content)
@@ -111,7 +116,11 @@ class fun(commands.Cog):
                 await ctx.send('👑👑👑 {0} first of their name! 👑👑👑'.format(member.mention))
 
             else:
-                await ctx.send('{0} went against no one and still lost!'.format(member.mention))             
+                await ctx.send('{0} went against no one and still lost!'.format(member.mention))   
+
+    @commands.command()
+    async def login(self, ctx):
+        await ctx.send('https://imgur.com/a/y0X2OVn')          
 
 
 async def setup(bot):
