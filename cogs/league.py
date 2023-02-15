@@ -34,7 +34,7 @@ class league(commands.Cog):
                 konnichiwa {0}, {1} calls for aid!
             '''.format(bobaverse_league, ctx.author.mention)
 
-        if ctx.guild.id == hutco_guild and len(tags) == 0:
+        elif ctx.guild.id == hutco_guild and len(tags) == 0:
 
             emb_msg1 = '''
                 konnichiwa {0}, {1} calls for aid!
@@ -43,7 +43,7 @@ class league(commands.Cog):
         elif len(tags) == 0:
 
             emb_msg1 = '''
-                konnichiwa! {1} calls for aid!
+                konnichiwa! {0} calls for aid!
             '''.format(ctx.author.mention)        
 
         else: 
