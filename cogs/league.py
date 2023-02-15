@@ -44,7 +44,7 @@ class league(commands.Cog):
 
             emb_msg1 = '''
                 konnichiwa! {1} calls for aid!
-            '''.format(league_of_l_role, ctx.author.mention)        
+            '''.format(ctx.author.mention)        
 
         else: 
 
