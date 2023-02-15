@@ -18,15 +18,27 @@ class league(commands.Cog):
 
     @commands.command()
     async def ratsignal(self, ctx, *tags , case_insensitive=True):
-
-        league_of_l_role = '<@&842451431403683891>'      
+  
+        league_role_test = '<@&1075530261116227634>'
+        yahallo_guild = 83311868432617472
+        bobaverse_guild = 416439957444362253
+        bobaverse_league = '<@&842451431403683891>'
+        hutco_guild = 102287854901669888
+        hutco_league = '<@951513678929330256>'
+                        
         author_id = ctx.author.id
 
-        if ctx.guild.id == 83311868432617472 and len(tags) == 0:
+        if ctx.guild.id == bobaverse_guild and len(tags) == 0:
+    
+            emb_msg1 = '''
+                konnichiwa {0}, {1} calls for aid!
+            '''.format(bobaverse_league, ctx.author.mention)
+
+        if ctx.guild.id == hutco_guild and len(tags) == 0:
 
             emb_msg1 = '''
                 konnichiwa {0}, {1} calls for aid!
-            '''.format(league_of_l_role, ctx.author.mention)
+            '''.format(hutco_league, ctx.author.mention)
 
         elif len(tags) == 0:
 
