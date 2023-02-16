@@ -19,12 +19,12 @@ class league(commands.Cog):
     @commands.command()
     async def ratsignal(self, ctx, *tags , case_insensitive=True):
   
-        league_role_test = '<@&1075530261116227634>'
+        league_role_test = '<@&1075666064349855764>'
         yahallo_guild = 83311868432617472
         bobaverse_guild = 416439957444362253
         bobaverse_league = '<@&842451431403683891>'
         hutco_guild = 102287854901669888
-        hutco_league = '<@951513678929330256>'
+        hutco_league = '<@1075585686926790656>'
                         
         author_id = ctx.author.id
 
@@ -50,7 +50,7 @@ class league(commands.Cog):
 
             emb_msg1 = '''
                 konnichiwa {0}, {1} calls for aid!
-            '''.format(tags, ctx.author.mention)            
+            '''.format(', '.join(tags), ctx.author.mention)            
 
         results = rt.get_last_game_summary(author_id)
 
@@ -418,17 +418,17 @@ class league(commands.Cog):
 
             puuid = rt.get_most_recent_game_puuid(first_member_id)
 
-            print(puuid)
+            # print(puuid)
 
             # get puuid of most recent game 
 
             matches_df = rt.last_n_match_details_df(puuid, n_games)
 
-            print(matches_df)
+            # print(matches_df)
 
             matches_formatted = rt.last_n_match_table(matches_df, puuid, n_games)
 
-            print(matches_formatted)
+            # print(matches_formatted)
 
             msg = '''```fix
 {0}

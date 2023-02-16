@@ -159,7 +159,7 @@ def last_n_match_details_df(puuid, n=1):
 		match_results = match_results + match_participants
 	
 	all_match_results = pd.DataFrame(match_results)
-	all_match_results['date'] = pd.to_datetime(all_match_results['game_end_timestamp'], unit='ms').dt.strftime('%a %m/%d')
+	all_match_results['date'] = pd.to_datetime(all_match_results['game_end_timestamp'], unit='ms').dt.tz_localize('utc').dt.tz_convert('US/Pacific').dt.strftime('%a %m/%d')
 	all_match_results['result'] = [ 'W' if x == True else 'L' for x in all_match_results['win']]
 	all_match_results['k/d/a'] = all_match_results.kills.map(str) + "/" + all_match_results.deaths.map(str) + "/" + all_match_results.assists.map(str)
 	all_match_results['totalDamageDealtFormatted'] = all_match_results['totalDamageDealtToChampions'].apply(numerize.numerize)
