@@ -24,7 +24,7 @@ class league(commands.Cog):
         bobaverse_guild = 416439957444362253
         bobaverse_league = '<@&842451431403683891>'
         hutco_guild = 102287854901669888
-        hutco_league = '<@951513678929330256>'
+        hutco_league = '<@&951513678929330256>'
                         
         author_id = ctx.author.id
 
