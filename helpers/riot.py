@@ -147,7 +147,8 @@ def last_n_match_details_df(puuid, n=1):
 
 	i = 0 
 	j = 0 
-	while i < 19:
+	n_limit = min(n,20)
+	while i < n_limit:
 		last_n_match_ids = get_matches(puuid, 0+j, n+j)
 
 		for match_id in last_n_match_ids:
