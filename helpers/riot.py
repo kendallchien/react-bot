@@ -132,43 +132,63 @@ def get_most_recent_game_puuid(discord_id):
 		return None
 
 
-def get_matches(puuid, n=1):
+def get_matches(puuid, start=0, count=1):
 	'''
 	get match IDs from last n matches
 	'''
-	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid)
-	last_n_match_ids = my_matches[0:n]
-
-	return last_n_match_ids
+	count = min(20,count) #max out at 20
+	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid, start=start, count=count)
+	
+	return my_matches
 
 
 def last_n_match_details_df(puuid, n=1):
 
 	match_results = []
 
-	last_n_match_ids = get_matches(puuid, n)
+	i = 0 
+	j = 0 
+	while i < n:
+		last_n_match_ids = get_matches(puuid, 0+j, n+j)
 
-	for match_id in last_n_match_ids:
-		match_detail = watcher.match.by_id(region='americas', match_id=match_id)
-		game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
-		match_participants = match_detail.get('info').get('participants')
-		for participant in match_participants:
-			participant['game_end_timestamp'] = game_end_timestamp
-			participant['matchId'] = match_id
+		for match_id in last_n_match_ids:
+			if i < n: 
+				'''
+				Get some info about the match 
+				'''
+				match_detail = watcher.match.by_id(region='americas', match_id=match_id)
+				game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
+				match_participants = match_detail.get('info').get('participants')	
+				game_mode = match_detail.get('info').get('gameMode')
 
-		match_results = match_results + match_participants
-	
+				'''
+				Check if classic mode (not ARAM)
+				'''
+				if game_mode == 'CLASSIC':
+
+					i += 1
+
+				for participant in match_participants:
+					participant['game_end_timestamp'] = game_end_timestamp
+					participant['matchId'] = match_id
+					participant['gamdeMode'] = game_mode
+
+				match_results = match_results + match_participants
+
+				j += 1
+			else:
+				break
+
 	all_match_results = pd.DataFrame(match_results)
 	all_match_results['date'] = pd.to_datetime(all_match_results['game_end_timestamp'], unit='ms').dt.tz_localize('utc').dt.tz_convert('US/Pacific').dt.strftime('%a %m/%d')
 	all_match_results['result'] = [ 'W' if x == True else 'L' for x in all_match_results['win']]
 	all_match_results['k/d/a'] = all_match_results.kills.map(str) + "/" + all_match_results.deaths.map(str) + "/" + all_match_results.assists.map(str)
 	all_match_results['totalDamageDealtFormatted'] = all_match_results['totalDamageDealtToChampions'].apply(numerize.numerize)
 
-	team_damage_df = all_match_results.groupby(['matchId', 'teamId'], as_index=False)['totalDamageDealt'].sum().rename(columns={'totalDamageDealt': 'teamTotalDmg'})
+	team_damage_df = all_match_results.groupby(['matchId', 'teamId'], as_index=False)['totalDamageDealtToChampions'].sum().rename(columns={'totalDamageDealtToChampions': 'teamTotalDmg'})
 	all_match_results = pd.merge(all_match_results, team_damage_df, on=['matchId', 'teamId'], how='inner')
-	all_match_results['totalDamagePerc'] = all_match_results['totalDamageDealt'] / all_match_results['teamTotalDmg']
+	all_match_results['totalDamagePerc'] = all_match_results['totalDamageDealtToChampions'] / all_match_results['teamTotalDmg']
 	all_match_results['totalDamagePercFormatted'] = all_match_results['totalDamagePerc'].map("{:.0%}".format)
-
 
 	return all_match_results
 	
@@ -187,6 +207,7 @@ def last_n_match_table(data, puuid, n_games):
 		# 'role',
 		'k/d/a',
 		'totalDamagePercFormatted',
+		# 'totalDamageDealtToChampions',
 		'result'
 	]
 
