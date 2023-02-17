@@ -43,7 +43,7 @@ def get_last_match_df(puuid):
 	'''
 	get last match summary from puuid
 	'''
-	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid)
+	my_matches = get_matches(puuid, start=0, count=1)
 	last_match = my_matches[0]
 	match_detail = watcher.match.by_id(region='americas', match_id=my_matches[0])
 	game_end_timestamp = match_detail.get('info').get('gameEndTimestamp')
@@ -136,11 +136,10 @@ def get_matches(puuid, start=0, count=1):
 	'''
 	get match IDs from last n matches
 	'''
-	count = min(20,count) #max out at 20
-	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid, start=start, count=count)
+	max_count = min(20, count) #max out at 20
+	my_matches = watcher.match.matchlist_by_puuid(region='americas', puuid=puuid, start=start, count=max_count)
 	
 	return my_matches
-
 
 def last_n_match_details_df(puuid, n=1):
 
@@ -195,6 +194,8 @@ def last_n_match_details_df(puuid, n=1):
 def last_n_match_table(data, puuid, n_games):
 
 	df = data.copy()
+
+	df = df[df['gamdeMode'] == 'CLASSIC']
 
 	if n_games > 1:
 
