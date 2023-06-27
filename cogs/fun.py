@@ -71,9 +71,16 @@ class fun(commands.Cog):
             await member.edit(nick=nick)
             await ctx.send('***{0}*** shall henceforward be known as... **{1}**!!!'.format(prev, nick))
 
+        except discord.Forbidden:
+            await ctx.send("Can't let you do StarFox {0} is too powerful.".format(prev))
+
+        except discord.HTTPException:
+            await ctx.send("An error occurred while trying to change the nickname.")
+
         except Exception as err:
-            await ctx.send('Cant let you do that starfox')
-            print(err)
+            await ctx.send("An unexpected error occurred: {}".format(err))            
+
+        print(err)
 
 
     @commands.command()
