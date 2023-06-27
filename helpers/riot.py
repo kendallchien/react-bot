@@ -223,7 +223,7 @@ def last_n_match_table(data, puuid, n_games):
 		'result': 'W/L'
 	}, inplace=True)	
 
-	matches_formatted = df.to_markdown(tablefmt='fancy_grid', showindex=False)[:1800]
+	matches_formatted = df.to_markdown(tablefmt='fancy_grid', index=False)[:1800]
 	
 	return matches_formatted
 
@@ -233,5 +233,5 @@ def tablefy(data, cols):
 	d = pd.DataFrame(data)
 	d_limited = d[cols]
 
-	return d_limited.to_markdown(tablefmt='fancy_grid', showindex=False)
+	return d_limited.to_markdown(tablefmt='fancy_grid', index=False)
 
