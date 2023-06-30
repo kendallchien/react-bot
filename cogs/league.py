@@ -1,13 +1,8 @@
 import discord
-import numpy as np
 from dotenv import load_dotenv
 from discord.ext import commands
-from discord.ui import Button, View
-from datetime import datetime
 import helpers.riot as rt
 import helpers.misc as ms
-from helpers.misc import View
-import pandas as pd
 
 
 class league(commands.Cog):

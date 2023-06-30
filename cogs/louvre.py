@@ -1,11 +1,6 @@
 import discord
-import os
-import asyncio
 import random
-import time
 from discord.ext import commands
-from datetime import datetime
-
 
 class louvre(commands.Cog):
 
