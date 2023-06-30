@@ -2,6 +2,7 @@
 .env
 ignore/
 bot-env
+myenv/
 .DS_Store
 __pycache__/
 .ipynb_checkpoints/
