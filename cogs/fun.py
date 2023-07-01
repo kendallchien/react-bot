@@ -1,6 +1,5 @@
 from discord.ext import commands
 import discord
-import numpy as np
 import asyncio
 import random
 
@@ -18,25 +17,27 @@ class MyView(discord.ui.View):
     async def yes_button_callback(self, interaction, button):  
         self.yes_count += 1 
         button.label = "Yes: {}".format(self.yes_count)
-        # await interaction.response.send_message('{} aids the usurper'.format(self.ctx.author.mention))
         random_int = random.randint(0,10)
         if random_int > 2:
-            self.content = self.content + '\n' + '- ⚔️ ' + interaction.user.name
+            self.content = self.content + '\n' + '- ⚔️ ' + interaction.user.display_name
         else: 
-            self.content = self.content + '\n' + '- 🍆 ' + interaction.user.name
+            self.content = self.content + '\n' + '- 🍆 ' + interaction.user.display_name
         await interaction.response.edit_message(content = self.content, view=self)
         
     @discord.ui.button(label="No!", style=discord.ButtonStyle.red, custom_id="danger")
     async def no_button_callback(self, interaction, button):
         self.no_count += 1 
         button.label = "No: {}".format(self.no_count)
-        self.content = self.content + '\n' + '- 🛡️ ' + interaction.user.name
-        # await interaction.response.send_message('{} cowers in fear'.format(self.ctx.author.mention))        
+        self.content = self.content + '\n' + '- 🛡️ ' + interaction.user.display_name
         await interaction.response.edit_message(content = self.content, view=self)
         
     async def on_timeout(self) -> None:
-        await self.ctx.send("Times up!")
-        return 
+        for child in self.children:
+            if isinstance(child, discord.ui.Button):
+                child.disabled = True
+                child.style = discord.ButtonStyle.grey
+        self.stop()
+        await self.wait()
 
 
 class fun(commands.Cog):
@@ -50,11 +51,13 @@ class fun(commands.Cog):
         '''
         List out all users with a certain role
         '''
-        role_members = []
-        async for member in ctx.guild.fetch_members(limit=None):
-            for member_role in member.roles:
-                if member_role == role:
-                    role_members.append(member.display_name)
+        # role_members = []
+        # async for member in ctx.guild.fetch_members(limit=None):
+        #     for member_role in member.roles:
+        #         if member_role == role:
+        #             role_members.append(member.display_name)
+
+        role_members = [member.display_name for member in ctx.guild.members if role in member.roles]
 
         embed=discord.Embed(title="The following users belong to the cult of {}".format(role), description='\n'.join(role_members), color=0x109319)
 
@@ -69,23 +72,55 @@ class fun(commands.Cog):
         prev = member.nick
         try:
             await member.edit(nick=nick)
-            await ctx.send('***{0}*** shall henceforward be known as... **{1}**!!!'.format(prev, nick))
+            await ctx.send(f'***{prev}*** shall henceforward be known as... **{nick}**!!!')
 
         except discord.Forbidden:
-            await ctx.send("Can't let you do StarFox {0} is too powerful.".format(member.name))
+            await ctx.send(f"Can't let you do StarFox {member.name} is too powerful.")
 
         except discord.HTTPException:
-            await ctx.send("An error occurred while trying to change the nickname.")
+            await ctx.send(f"An error occurred while trying to change the nickname.")
 
         except Exception as err:
-            await ctx.send("An unexpected error occurred: {}".format(err))            
+            await ctx.send(f"An unexpected error occurred: {err}")
 
 
     @commands.command()
-    async def crown(self, ctx, member: discord.Member):
+    async def showyourself(self, ctx):
+        """
+        Lists all the users in the channel where the command was sent.
+        """
+        # Get the text channel where the command was sent
+        channel = ctx.channel
 
-        crown_role = ctx.guild.get_role(1036779018785132566)
-        # crown_role = ctx.guild.get_role(1036813094749483088) #test server
+        # Get the list of members in the channel
+        channel_members = [member.display_name for member in channel.members]
+
+        if channel_members:
+            # Create an embed to display the member list
+            embed = discord.Embed(title=f"Members in #{channel.name}", description='\n'.join(channel_members), color=discord.Color.red())
+
+            # Send the embed as a message
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("No members in the channel.")
+
+    
+    async def get_or_create_crown_role(self, ctx):
+
+        crown_role_name = "👑"
+        crown_role = discord.utils.get(ctx.guild.roles, name=crown_role_name)        
+
+        await asyncio.sleep(1)
+
+        if crown_role is None:
+            crown_role = await ctx.guild.create_role(name=crown_role_name)
+
+        return crown_role
+                    
+
+    @commands.command()
+    async def crown(self, ctx, member: discord.Member):
+        crown_role = await self.get_or_create_crown_role(ctx)
 
         if len(crown_role.members) == 0:
             content = 'there are no crowns in this land!'
@@ -93,7 +128,8 @@ class fun(commands.Cog):
         else:
             current_crown = crown_role.members[0]
             actions = ['to storm the capital', 'a mutiny', 'to usurp the throne', 'to challenge our dear leader']
-            content = '{0} has proposed {1} and pass the crown from {2} to {3}'.format(ctx.author.mention, np.random.choice(actions), current_crown.mention, member.mention)
+            chosen_action = random.choice(actions)
+            content = '{0} has proposed {1} and pass the crown from {2} to {3}'.format(ctx.author.mention, chosen_action, current_crown.mention, member.mention)
 
         view=MyView(ctx, content)
             
