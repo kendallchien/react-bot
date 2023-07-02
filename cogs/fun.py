@@ -166,7 +166,7 @@ class fun(commands.Cog):
 
 
     @commands.command()
-    async def enlarger(self, ctx, emoji: discord.PartialEmoji):
+    async def enlarge(self, ctx, emoji: discord.PartialEmoji):
         
         try:
             await ctx.send(emoji.url)
