@@ -8,8 +8,8 @@ import asyncio
 load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
-# TOKEN = os.getenv('DISCORD_TOKEN')
-TOKEN = os.getenv('DISCORD_TOKEN_TEST')
+TOKEN = os.getenv('DISCORD_TOKEN')
+# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 
 intents = discord.Intents.default()
 intents.members = True
