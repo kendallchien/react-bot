@@ -165,7 +165,7 @@ class fun(commands.Cog):
         await ctx.send('https://imgur.com/a/y0X2OVn')        
 
 
-    @commands.command()
+    @commands.command(aliases=['xxl', 'e'])
     async def enlarge(self, ctx, emoji: discord.PartialEmoji):
         
         try:
