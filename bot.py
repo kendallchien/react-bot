@@ -8,7 +8,8 @@ import asyncio
 load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
-TOKEN = os.getenv('DISCORD_TOKEN')
+# TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 
 intents = discord.Intents.default()
 intents.members = True
@@ -23,7 +24,13 @@ cogs: list = [
 ]
 
 # SET BOT COMMAND PREFIX
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents, debug=True)
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    print(f"An error occurent in event {event}:")
+    import traceback
+    traceback.print_exc()
 
 @bot.event
 async def on_ready() -> None:

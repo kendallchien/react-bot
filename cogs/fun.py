@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import asyncio
 import random
+import requests
 
 
 class MyView(discord.ui.View):
@@ -161,7 +162,18 @@ class fun(commands.Cog):
 
     @commands.command()
     async def login(self, ctx):
-        await ctx.send('https://imgur.com/a/y0X2OVn')          
+        await ctx.send('https://imgur.com/a/y0X2OVn')        
+
+
+    @commands.command()
+    async def enlarger(self, ctx, emoji: discord.PartialEmoji):
+        
+        try:
+            await ctx.send(emoji.url)
+        
+        except Exception as e:
+            print(f"An error occurred in the enlarger command: {e}")
+            await ctx.send("An error occurred while enlarging the emoji It's too big.")
 
 
 async def setup(bot):
