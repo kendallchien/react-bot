@@ -1,9 +1,8 @@
 from discord.ext import commands
+from discord import app_commands
 import discord
 import asyncio
 import random
-import requests
-
 
 class MyView(discord.ui.View):
 
@@ -47,51 +46,53 @@ class fun(commands.Cog):
         self.bot = bot
         self._last_member = None
 
-    @commands.command()
-    async def identify(self, ctx, role: discord.Role):
+
+    @app_commands.command(name='say', description="say something")
+    async def say(self, interaction: discord.Interaction):
+        await interaction.response.send_message(content='hello')
+
+
+    @app_commands.command(name='identify', description='identify users')
+    @app_commands.describe(role='put a role here')
+    async def identify(self, interaction: discord.Interaction, role: discord.Role):
         '''
         List out all users with a certain role
         '''
-        # role_members = []
-        # async for member in ctx.guild.fetch_members(limit=None):
-        #     for member_role in member.roles:
-        #         if member_role == role:
-        #             role_members.append(member.display_name)
 
-        role_members = [member.display_name for member in ctx.guild.members if role in member.roles]
+        role_members = [member.display_name for member in interaction.guild.members if role in member.roles]
 
         embed=discord.Embed(title="The following users belong to the cult of {}".format(role), description='\n'.join(role_members), color=0x109319)
 
-        await ctx.send(embed=embed)
+        await interaction.response.send_message(embed=embed)
 
 
-    @commands.command(pass_context=True)
-    async def rename(self, ctx, member: discord.Member, nick):
+    @app_commands.command(name='rename', description='rename person')
+    async def rename(self, interaction: discord.Interaction, person: discord.Member, new_name: str):
         '''
         Rename users in channel
         '''
-        prev = member.nick
+        prev = person.nick
         try:
-            await member.edit(nick=nick)
-            await ctx.send(f'***{prev}*** shall henceforward be known as... **{nick}**!!!')
+            await person.edit(nick=new_name)
+            await interaction.response.send_message(f'***{prev}*** shall henceforward be known as... **{new_name}**!!!')
 
         except discord.Forbidden:
-            await ctx.send(f"Can't let you do StarFox {member.name} is too powerful.")
+            await interaction.response.send_message(f"Can't let you do StarFox {person.name} is too powerful.")
 
         except discord.HTTPException:
-            await ctx.send(f"An error occurred while trying to change the nickname.")
+            await interaction.response.send_message(f"An error occurred while trying to change the nickname.")
 
         except Exception as err:
-            await ctx.send(f"An unexpected error occurred: {err}")
+            await interaction.response.send_message(f"An unexpected error occurred: {err}")
 
 
-    @commands.command()
-    async def showyourself(self, ctx):
+    @app_commands.command(name='reveal', description='reveal useres in channel')
+    async def reveal(self, interaction: discord.Interaction):
         """
         Lists all the users in the channel where the command was sent.
         """
         # Get the text channel where the command was sent
-        channel = ctx.channel
+        channel = interaction.channel
 
         # Get the list of members in the channel
         channel_members = [member.display_name for member in channel.members]
@@ -101,9 +102,9 @@ class fun(commands.Cog):
             embed = discord.Embed(title=f"Members in #{channel.name}", description='\n'.join(channel_members), color=discord.Color.red())
 
             # Send the embed as a message
-            await ctx.send(embed=embed)
+            await interaction.response.send_message(embed=embed)
         else:
-            await ctx.send("No members in the channel.")
+            await interaction.response.send_message("No members in the channel.")
 
     
     async def get_or_create_crown_role(self, ctx):
@@ -119,9 +120,9 @@ class fun(commands.Cog):
         return crown_role
                     
 
-    @commands.command()
-    async def crown(self, ctx, member: discord.Member):
-        crown_role = await self.get_or_create_crown_role(ctx)
+    @app_commands.command(name='crown', description='put a shiny hat on someone')
+    async def crown(self, interaction: discord.Interaction, member: discord.Member):
+        crown_role = await self.get_or_create_crown_role(interaction)
 
         if len(crown_role.members) == 0:
             content = 'there are no crowns in this land!'
@@ -130,11 +131,11 @@ class fun(commands.Cog):
             current_crown = crown_role.members[0]
             actions = ['to storm the capital', 'a mutiny', 'to usurp the throne', 'to challenge our dear leader']
             chosen_action = random.choice(actions)
-            content = '{0} has proposed {1} and pass the crown from {2} to {3}'.format(ctx.author.mention, chosen_action, current_crown.mention, member.mention)
+            content = '{0} has proposed {1} and pass the crown from {2} to {3}'.format(interaction.user.mention, chosen_action, current_crown.mention, member.mention)
 
-        view=MyView(ctx, content)
+        view=MyView(interaction, content)
             
-        await ctx.send(content, view=view)
+        await interaction.response.send_message(content, view=view)
         await asyncio.sleep(20) ## consider adding ability for user to extend the vote
         view.stop()
         await view.wait()
@@ -144,37 +145,38 @@ class fun(commands.Cog):
             if view.yes_count > view.no_count:
                 await member.add_roles(crown_role)
                 await current_crown.remove_roles(crown_role)
-                await ctx.send('👑👑👑 {0} has been CROWNED...so help us all 👑👑👑'.format(member.mention))
+                await interaction.response.send_message.send('👑👑👑 {0} has been CROWNED...so help us all 👑👑👑'.format(member.mention))
 
             elif view.yes_count == view.no_count:
-                await ctx.send('A tie... {0} retains their throne'.format(current_crown.mention))
+                await interaction.response.send_message.send('A tie... {0} retains their throne'.format(current_crown.mention))
 
             elif view.yes_count < view.no_count:    
-                await ctx.send('An attempt was made by a loser, but {0} retains their throne'.format(current_crown.mention))
+                await interaction.response.send_message.send('An attempt was made by a loser, but {0} retains their throne'.format(current_crown.mention))
 
         else:
             if view.yes_count > view.no_count:
                 await member.add_roles(crown_role)
-                await ctx.send('👑👑👑 {0} first of their name! 👑👑👑'.format(member.mention))
+                await interaction.response.send_message.send('👑👑👑 {0} first of their name! 👑👑👑'.format(member.mention))
 
             else:
-                await ctx.send('{0} went against no one and still lost!'.format(member.mention))   
+                await interaction.response.send_message.send('{0} went against no one and still lost!'.format(member.mention))   
 
-    @commands.command()
-    async def login(self, ctx):
-        await ctx.send('https://imgur.com/a/y0X2OVn')        
+    @app_commands.command(name='login', description='get the milkshake')
+    async def login(self, interaction: discord.Interaction):
+        await interaction.response.send_message('https://imgur.com/a/y0X2OVn')        
 
 
-    @commands.command(aliases=['xxl', 'e'])
-    async def enlarge(self, ctx, emoji: discord.PartialEmoji):
+    @app_commands.command(name='xxl')
+    async def enlarge(self, interaction : discord.Interaction, emoji: str):
         
         try:
-            await ctx.send(emoji.url)
+            # await ctx.send(emoji.url)
+
+            await interaction.response.send_message(discord.PartialEmoji.from_str(emoji).url)
         
         except Exception as e:
             print(f"An error occurred in the enlarger command: {e}")
-            await ctx.send("An error occurred while enlarging the emoji It's too big.")
-
+            await interaction.response.send_message("An error occurred while enlarging the emoji. It's too big.")
 
 async def setup(bot):
     await bot.add_cog(fun(bot))

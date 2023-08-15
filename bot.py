@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 import os
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -35,6 +36,14 @@ async def on_error(event, *args, **kwargs):
 @bot.event
 async def on_ready() -> None:
     await bot.change_presence(status=discord.Status.online)
+
+    # try: 
+    #     synced = await bot.tree.sync()
+    #     print(f"Synced {len(synced)} command(s)")
+
+    # except Exception as e:
+    #     print(e)
+
     for cog in cogs:
         try:
             print(f"Loading cog {cog}")
@@ -45,7 +54,11 @@ async def on_ready() -> None:
             exc = "{}: {}".format(type(e).__name__, e)
             print("Failed to load cog {}\n{}".format(cog, exc))
 
+    synced = await bot.tree.sync()
+
     print('We have logged in as {0.user}'.format(bot))
+
+
 
 async def main():
     try:
