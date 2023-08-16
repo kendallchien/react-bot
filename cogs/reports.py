@@ -43,11 +43,10 @@ class Report(commands.Cog):
 
         try: 
             await reports_channel.send(embed=embed) 
-            # print('ok8')
-            
-            print('ok9')
+
         except discord.Forbidden:
             await interaction.response.send_message("I don't have permission to do that")
+            
         except discord.HTTPException:
             await interaction.response.send_message('An error occured')
 
@@ -93,6 +92,7 @@ class Report(commands.Cog):
 
                     if counter >= 10:
                         break
+
         if reports:
             embed = discord.Embed(title="Reports 🚩",
                                   color=discord.Color.red()                
@@ -100,6 +100,7 @@ class Report(commands.Cog):
             embed.add_field(name="Latest Reports", value='\n'.join(reversed(reports)))
 
             await interaction.response.send_message(content=f"looks like {user.mention} has been a bad gender neutral pronoun", embed=embed)
+
         else:
             await interaction.response.send_message(f"No reports found for {user.display_name}.")
 

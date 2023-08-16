@@ -10,7 +10,6 @@ load_dotenv()
 
 # GRAB API TOKEN FROM .ENV
 TOKEN = os.getenv('DISCORD_TOKEN')
-# TOKEN = os.getenv('DISCORD_TOKEN_TEST')
 
 intents = discord.Intents.default()
 intents.members = True
@@ -38,13 +37,6 @@ async def on_error(event, *args, **kwargs):
 async def on_ready() -> None:
     await bot.change_presence(status=discord.Status.online)
 
-    # try: 
-    #     synced = await bot.tree.sync()
-    #     print(f"Synced {len(synced)} command(s)")
-
-    # except Exception as e:
-    #     print(e)
-
     for cog in cogs:
         try:
             print(f"Loading cog {cog}")
@@ -70,5 +62,6 @@ async def main():
 
 try:
     asyncio.run(main())
+
 except KeyboardInterrupt:
     pass

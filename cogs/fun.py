@@ -170,8 +170,6 @@ class fun(commands.Cog):
     async def enlarge(self, interaction : discord.Interaction, emoji: str):
         
         try:
-            # await ctx.send(emoji.url)
-
             await interaction.response.send_message(discord.PartialEmoji.from_str(emoji).url)
         
         except Exception as e:
