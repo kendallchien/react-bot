@@ -33,9 +33,6 @@ async def on_error(event, *args, **kwargs):
     import traceback
     traceback.print_exc()
 
-@bot.event
-async def on_command_error(ctx, error):
-    await ctx.send(f"An error occured: {str(error)}")    
 
 @bot.event
 async def on_ready() -> None:
