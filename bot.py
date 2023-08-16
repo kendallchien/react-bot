@@ -17,11 +17,11 @@ intents.members = True
 intents.message_content = True
 
 cogs: list = [
-    "cogs.fun",
+    # "cogs.fun",
     "cogs.louvre",
-    "cogs.league",
-    "cogs.spoiler_chats",
-    "cogs.reports"
+    # "cogs.league",
+    # "cogs.spoiler_chats",
+    # "cogs.reports"
 ]
 
 # SET BOT COMMAND PREFIX
@@ -32,6 +32,10 @@ async def on_error(event, *args, **kwargs):
     print(f"An error occurent in event {event}:")
     import traceback
     traceback.print_exc()
+
+@bot.event
+async def on_command_error(ctx, error):
+    await ctx.send(f"An error occured: {str(error)}")    
 
 @bot.event
 async def on_ready() -> None:
@@ -57,8 +61,6 @@ async def on_ready() -> None:
     synced = await bot.tree.sync()
 
     print('We have logged in as {0.user}'.format(bot))
-
-
 
 async def main():
     try:

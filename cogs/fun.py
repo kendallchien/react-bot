@@ -63,7 +63,7 @@ class fun(commands.Cog):
 
         embed=discord.Embed(title="The following users belong to the cult of {}".format(role), description='\n'.join(role_members), color=0x109319)
 
-        await interaction.response.send_message(embed=embed)
+        await interaction.response.send_message(embed=embed, silent=True)
 
 
     @app_commands.command(name='rename', description='rename person')
@@ -102,7 +102,7 @@ class fun(commands.Cog):
             embed = discord.Embed(title=f"Members in #{channel.name}", description='\n'.join(channel_members), color=discord.Color.red())
 
             # Send the embed as a message
-            await interaction.response.send_message(embed=embed)
+            await interaction.response.send_message(embed=embed, silent=True)
         else:
             await interaction.response.send_message("No members in the channel.")
 
