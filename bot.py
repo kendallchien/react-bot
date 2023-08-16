@@ -17,11 +17,11 @@ intents.members = True
 intents.message_content = True
 
 cogs: list = [
-    # "cogs.fun",
+    "cogs.fun",
     "cogs.louvre",
-    # "cogs.league",
-    # "cogs.spoiler_chats",
-    # "cogs.reports"
+    "cogs.league",
+    "cogs.spoiler_chats",
+    "cogs.reports"
 ]
 
 # SET BOT COMMAND PREFIX

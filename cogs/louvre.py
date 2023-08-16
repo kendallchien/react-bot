@@ -36,7 +36,7 @@ class louvre(commands.Cog):
         '''
         if interaction.guild and interaction.guild.id in self.allowed_guild_ids:
 
-            random_msg = self.fetch_random_message()
+            random_msg = await self.fetch_random_message()
 
             if random_msg: 
 
