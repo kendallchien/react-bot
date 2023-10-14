@@ -10,15 +10,16 @@ import os
 class Lore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.data_file = 'data/lore_data.json'  # Update the path as needed
         self.token = os.getenv('OPENAI_API_KEY')
+        os.makedirs(os.path.dirname('data/'), exist_ok=True)
 
     @app_commands.command(name='lore')
     async def lore(self, interaction: discord.Interaction, entry: str):
+        self.data_file = f'data/{interaction.guild.id}_lore_data.json'
+
         try:
             """Add a lore entry."""
             # Load existing lore entries
-            os.makedirs(os.path.dirname(self.data_file), exist_ok=True)
             lore_entries = await self.load_lore_data()
 
             # Add the new entry with user and timestamp
@@ -37,6 +38,7 @@ class Lore(commands.Cog):
 
     @app_commands.command(name='lore-summary')
     async def lore_summary(self, interaction:discord.Interaction, prompt: str=""):
+        self.data_file = f'data/{interaction.guild.id}_lore_data.json'
         try:
             """Generate a lore summary."""
             # Load existing lore entries
@@ -45,7 +47,7 @@ class Lore(commands.Cog):
             # Generate a summary (you can replace this with your AI-based summary generation)
             summary = await self.generate_fantasy_story(lore_entries, prompt)
 
-            await interaction.response.send_message(f" {summary}")
+            await interaction.response.send_message(f">>> {summary}")
         except:
             print(f"An error occured {e}")
 
