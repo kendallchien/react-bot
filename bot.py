@@ -20,7 +20,8 @@ cogs: list = [
     "cogs.louvre",
     "cogs.league",
     "cogs.spoiler_chats",
-    "cogs.reports"
+    "cogs.reports",
+    "cogs.lore"
 ]
 
 # SET BOT COMMAND PREFIX
