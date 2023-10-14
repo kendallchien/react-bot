@@ -7,7 +7,6 @@ from datetime import datetime
 import os 
 
 
-
 class Lore(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -19,6 +18,7 @@ class Lore(commands.Cog):
         try:
             """Add a lore entry."""
             # Load existing lore entries
+            os.makedirs(os.path.dirname(self.data_file), exist_ok=True)
             lore_entries = await self.load_lore_data()
 
             # Add the new entry with user and timestamp
