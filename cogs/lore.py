@@ -12,9 +12,39 @@ class Lore(commands.Cog):
         self.bot = bot
         self.token = os.getenv('OPENAI_API_KEY')
         os.makedirs(os.path.dirname('data/'), exist_ok=True)
+        self.prompts = {
+            '83311868432617472': """
+                I will send you some information collected from a Discord bot I wrote. This Discord bot has a lore command that allows users to submit information, which is being aggregated here. The JSON file contains user-submitted entries, each formatted as a JSON string that includes the user who submitted the entry and the timestamp.
+
+                I want you to turn the information from these JSON-formatted entries into a short story, just a few paragraphs, written in a fantasy style.
+
+                Here's some more information for you:
+                - In this fantasy world, the land should be called "Yahallo."
+                - Brian is the hottest dude at the peak
+                - Stephanie has a juicy booty
+                - Kendall is a self pro-claimed hero of justice 
+                - Kelly is secretively a vampire
+                - Andy has a expansive knife collection
+                
+                Please keep the response as short as possible but still comprehensive.
+
+                Please use this background to craft a fantastical tale that transports readers to the enchanting realm of "Yahallo." Incorporate the lore and stories shared by the bot's users from the JSON file into the narrative, infusing the story with elements of magic, adventure, and wonder. Let your creativity flow as you paint a vivid picture of this mystical world and its captivating tales. Keep the response within 500 characters
+                """,
+            '416439957444362253': """
+                I will send you some information collected from a Discord bot I wrote. This Discord bot has a lore command that allows users to submit information, which is being aggregated here. The JSON file contains user-submitted entries, each formatted as a JSON string that includes the user who submitted the entry and the timestamp.
+
+                I want you to turn the information from these JSON-formatted entries into a short story, just a few paragraphs, written in a fantasy style. Feel free to get creative
+
+                Please keep the response as short as possible but still comprehensive.
+
+                Please use this background to craft a fantastical tale that transports readers to the enchanting realm of "bobaverse."  Keep the response within 500 characters
+
+            """
+        }
 
     @app_commands.command(name='lore')
     async def lore(self, interaction: discord.Interaction, entry: str):
+        self.guild_id = interaction.guild_id 
         self.data_file = f'data/{interaction.guild.id}_lore_data.json'
 
         try:
@@ -38,6 +68,7 @@ class Lore(commands.Cog):
 
     @app_commands.command(name='lore-summary')
     async def lore_summary(self, interaction:discord.Interaction, prompt: str=""):
+        self.guild_id = interaction.guild_id 
         self.data_file = f'data/{interaction.guild.id}_lore_data.json'
         try:
             """Generate a lore summary."""
@@ -70,23 +101,7 @@ class Lore(commands.Cog):
             openai.api_key = self.token
 
             # Construct the base prompt with your desired fantasy-style instructions
-            base_prompt = """
-            I will send you some information collected from a Discord bot I wrote. This Discord bot has a lore command that allows users to submit information, which is being aggregated here. The JSON file contains user-submitted entries, each formatted as a JSON string that includes the user who submitted the entry and the timestamp.
-
-            I want you to turn the information from these JSON-formatted entries into a short story, just a few paragraphs, written in a fantasy style.
-
-            Here's some more information for you:
-            - In this fantasy world, the land should be called "Yahallo."
-            - Brian is the hottest dude at the peak
-            - Stephanie has a juicy booty
-            - Kendall is a self pro-claimed hero of justice 
-            - Kelly is secretively a vampire
-            - Andy has a expansive knife collection
-            
-            Please keep the response as short as possible but still comprehensive.
-
-            Please use this background to craft a fantastical tale that transports readers to the enchanting realm of "Yahallo." Incorporate the lore and stories shared by the bot's users from the JSON file into the narrative, infusing the story with elements of magic, adventure, and wonder. Let your creativity flow as you paint a vivid picture of this mystical world and its captivating tales. Keep the response within 500 characters
-            """
+            base_prompt = self.prompts.get(str(self.guild_id), "Use information provided that is JSON converted to string to tell a short story in less than 500 characters. Keep things concise")
 
             # Check if additional_context is provided, and if so, emphasize its importance in the prompt
             if additional_context:
