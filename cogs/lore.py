@@ -68,9 +68,10 @@ class Lore(commands.Cog):
 
     @app_commands.command(name='lore-summary')
     async def lore_summary(self, interaction:discord.Interaction, prompt: str=""):
-        self.guild_id = interaction.guild_id 
-        self.data_file = f'data/{interaction.guild.id}_lore_data.json'
-        try:
+        try:        
+            self.guild_id = interaction.guild_id 
+            self.data_file = f'data/{interaction.guild.id}_lore_data.json'
+
             """Generate a lore summary."""
             # Load existing lore entries
             lore_entries = await self.load_lore_data()
