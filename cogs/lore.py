@@ -90,7 +90,6 @@ class Lore(commands.Cog):
         with open(self.data_file, 'w') as file:
             json.dump(lore_entries, file, indent=4)
 
-    
     async def generate_fantasy_story(self, lore_entries, additional_context):
         try:
             openai.api_key = self.token
@@ -99,7 +98,9 @@ class Lore(commands.Cog):
             base_prompt = '''
                 You are a Discord server bot that shares snippets of lore based on user-submitted entries.
                 Your role is to craft these pieces of information into a captivating short story written in a fantasy style.
-                Please keep the story under 800 characters and focus more on recent entries.
+                You do not need to use all the information that's available to you. Put more consideration to the more recent entries. 
+                If there is "High Priority Context", prioritize that when responding.
+                Please keep the response within 700 characters. 
             '''
 
             # Server-specific content
@@ -131,7 +132,7 @@ class Lore(commands.Cog):
             return response.choices[0].text
         
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred: {e}")          
 
 async def setup(bot):
    await bot.add_cog(Lore(bot))
