@@ -101,6 +101,7 @@ class Lore(commands.Cog):
                 You do not need to use all the information that's available to you. Put more consideration to the more recent entries. 
                 If there is "High Priority Context", prioritize that when responding.
                 Please keep the response within 700 characters. 
+                At the end of this response is a string converted to JSON that contains the user that submitted the lore entry, the date of the submission, and the submission
             '''
 
             # Server-specific content
