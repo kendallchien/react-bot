@@ -26,7 +26,7 @@ class Lore(commands.Cog):
                 - Kelly is secretively a vampire
                 - Andy has a expansive knife collection
                 
-                Please keep the response as short as possible but still comprehensive.
+                Please keep the response as short as possible but still comprehensive. You do not need to use ALL the information given for the story. I would prioritize the most recent entries when building a story, but also mix in some older entries occasionally. 
 
                 Please use this background to craft a fantastical tale that transports readers to the enchanting realm of "Yahallo." Incorporate the lore and stories shared by the bot's users from the JSON file into the narrative, infusing the story with elements of magic, adventure, and wonder. Let your creativity flow as you paint a vivid picture of this mystical world and its captivating tales. Keep the response within 500 characters
                 """,
@@ -67,6 +67,7 @@ class Lore(commands.Cog):
             print(f"An error occurred: {e}")
 
     @app_commands.command(name='lore-summary')
+
     async def lore_summary(self, interaction:discord.Interaction, prompt: str=""):
         try:        
             self.guild_id = interaction.guild_id 
@@ -77,7 +78,7 @@ class Lore(commands.Cog):
             lore_entries = await self.load_lore_data()
 
             # Generate a summary (you can replace this with your AI-based summary generation)
-            summary = await self.generate_fantasy_story(lore_entries, prompt)
+            summary = await self.ll(lore_entries, prompt)
 
             await interaction.response.send_message(f">>> {summary}")
         except:
@@ -125,6 +126,7 @@ class Lore(commands.Cog):
             )
 
             return response.choices[0].text
+        
         except Exception as e:
             print(f"An error occurred: {e}")
 
