@@ -81,16 +81,16 @@ class ReactionHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
 
+        # Check if the reaction is in an allowed guild and has a saved channel
+        if payload.guild_id not in self.allowed_guild_ids or payload.guild_id not in self.guild_to_saved_channel:
+            return
+        
         saved_channel_id = self.guild_to_saved_channel[payload.guild_id]
         saved_channel = self.bot.get_channel(saved_channel_id)
 
         # Fetch the member from the guild
         guild = self.bot.get_guild(payload.guild_id)
-        member = guild.get_member(payload.user_id)        
-
-        # Check if the reaction is in an allowed guild and has a saved channel
-        if payload.guild_id not in self.allowed_guild_ids or payload.guild_id not in self.guild_to_saved_channel:
-            return
+        member = guild.get_member(payload.user_id)              
 
         # Fetch the channel and message
         channel = self.bot.get_channel(payload.channel_id)
