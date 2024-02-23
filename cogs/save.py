@@ -84,6 +84,10 @@ class ReactionHandler(commands.Cog):
         saved_channel_id = self.guild_to_saved_channel[payload.guild_id]
         saved_channel = self.bot.get_channel(saved_channel_id)
 
+        # Fetch the member from the guild
+        guild = self.bot.get_guild(payload.guild_id)
+        member = guild.get_member(payload.user_id)        
+
         # Check if the reaction is in an allowed guild and has a saved channel
         if payload.guild_id not in self.allowed_guild_ids or payload.guild_id not in self.guild_to_saved_channel:
             return
@@ -134,7 +138,7 @@ class ReactionHandler(commands.Cog):
             embed.add_field(name="", value=message_link, inline=True)
 
             # Set the footer to include the username of the user who added the reaction
-            embed.set_footer(text="Saved by: {}".format(user.display_name))
+            embed.set_footer(text="Saved by: {}".format(member.display_name))
 
             # Send the embed to the saved channel
             sent_message = await saved_channel.send(embed=embed)
