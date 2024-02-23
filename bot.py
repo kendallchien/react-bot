@@ -21,7 +21,8 @@ cogs: list = [
     "cogs.league",
     "cogs.spoiler_chats",
     "cogs.reports",
-    "cogs.lore"
+    "cogs.lore",
+    "cogs.save"
 ]
 
 # SET BOT COMMAND PREFIX
